@@ -6,6 +6,7 @@ plugins {
     kotlin("plugin.serialization") version "1.3.72"
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -47,6 +48,8 @@ dependencies {
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
+
+    implementation("com.google.firebase:firebase-auth-ktx:19.3.2")
 
     implementation("com.google.dagger:hilt-android:2.28.3-alpha")
     kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")

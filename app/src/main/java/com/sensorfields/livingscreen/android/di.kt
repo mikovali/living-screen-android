@@ -2,6 +2,8 @@ package com.sensorfields.livingscreen.android
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
@@ -26,6 +28,16 @@ object ApplicationModule {
     @Singleton
     @Provides
     fun json(): Json = Json { ignoreUnknownKeys = true }
+
+    @Singleton
+    @Provides
+    fun firebaseApp(@ApplicationContext context: Context): FirebaseApp {
+        return FirebaseApp.initializeApp(context)!!
+    }
+
+    @Singleton
+    @Provides
+    fun firebaseAuth(firebaseApp: FirebaseApp): FirebaseAuth = FirebaseAuth(firebaseApp)
 }
 
 @Module

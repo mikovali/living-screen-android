@@ -4,4 +4,6 @@
 
     <string name="album_list_title">Albums</string>
 
+    <string name="account_create_title">Login</string>
+
 </resources>

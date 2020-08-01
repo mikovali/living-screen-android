@@ -4,8 +4,17 @@
     android:id="@+id/mainGraph"
     app:startDestination="@id/albumListFragment">
 
+    <action
+        android:id="@+id/accountCreate"
+        app:destination="@id/accountCreateFragment"
+        app:popUpTo="@id/mainGraph" />
+
     <fragment
         android:id="@+id/albumListFragment"
         android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment" />
+
+    <fragment
+        android:id="@+id/accountCreateFragment"
+        android:name="com.sensorfields.livingscreen.android.account.create.AccountCreateFragment" />
 
 </navigation>

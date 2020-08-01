@@ -9,6 +9,7 @@ buildscript {
         classpath(kotlin("gradle-plugin", version = "1.3.72"))
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.28.3-alpha")
+        classpath("com.google.gms:google-services:4.3.3")
     }
 }
 
