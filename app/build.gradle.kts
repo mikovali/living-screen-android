@@ -44,12 +44,9 @@ dependencies {
 
     implementation("androidx.fragment:fragment-ktx:1.2.5")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.0")
+    implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
-    implementation("com.google.android.material:material:1.1.0")
 
     implementation("com.google.dagger:hilt-android:2.28.3-alpha")
     kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")

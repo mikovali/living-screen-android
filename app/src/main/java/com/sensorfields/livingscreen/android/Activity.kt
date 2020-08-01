@@ -1,7 +1,7 @@
 package com.sensorfields.livingscreen.android
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class Activity : AppCompatActivity(R.layout.activity)
+class Activity : FragmentActivity(R.layout.activity)
