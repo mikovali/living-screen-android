@@ -43,13 +43,14 @@ androidExtensions {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation("androidx.fragment:fragment-ktx:1.2.5")
+    implementation("androidx.fragment:fragment-ktx:1.3.0-alpha07")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 
     implementation("com.google.firebase:firebase-auth-ktx:19.3.2")
+    implementation("com.google.android.gms:play-services-auth:18.1.0")
 
     implementation("com.google.dagger:hilt-android:2.28.3-alpha")
     kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")

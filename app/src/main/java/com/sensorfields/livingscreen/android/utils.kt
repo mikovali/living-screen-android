@@ -1,10 +1,20 @@
 package com.sensorfields.livingscreen.android
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 inline fun producer(crossinline producer: () -> ViewModel) = object : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -28,4 +38,24 @@ class ActionLiveData<T> : MutableLiveData<T>() {
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         super.observe(owner, Observer<T> { value -> if (value != null) observer.onChanged(value) })
     }
+}
+
+class SignInWithGoogle : ActivityResultContract<GoogleSignInOptions, GoogleSignInAccount?>() {
+
+    override fun createIntent(context: Context, input: GoogleSignInOptions): Intent {
+        return GoogleSignIn.getClient(context, input).signInIntent
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): GoogleSignInAccount? {
+        return try {
+            GoogleSignIn.getSignedInAccountFromIntent(intent).result
+        } catch (e: Exception) {
+            null
+        }
+    }
+}
+
+suspend fun <T> Task<T>.await(): T = suspendCoroutine { continuation ->
+    addOnSuccessListener { result -> continuation.resume(result) }
+    addOnFailureListener { e -> continuation.resumeWithException(e) }
 }
