@@ -1,3 +1,3 @@
 package com.sensorfields.livingscreen.android.domain
 
-class Album
+data class Album(val id: String, val title: String)

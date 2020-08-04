@@ -13,7 +13,10 @@ data class AlbumDto(
 )
 
 fun AlbumDto.toModel(): Album {
-    return Album()
+    return Album(
+        id = id,
+        title = title
+    )
 }
 
 fun List<AlbumDto>.toModels(): List<Album> = map { it.toModel() }

@@ -17,8 +17,7 @@
 
     <fragment
         android:id="@+id/albumListFragment"
-        android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment"
-        tools:layout="@layout/album_list_fragment" />
+        android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment" />
 
     <fragment
         android:id="@+id/accountCreateFragment"

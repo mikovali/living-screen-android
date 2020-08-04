@@ -1,37 +1,51 @@
 package com.sensorfields.livingscreen.android.album.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
+import androidx.leanback.widget.ListRowPresenter
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.databinding.AlbumListFragmentBinding
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Provider
 
+// TODO rename to AlbumBrowseFragment?
 @AndroidEntryPoint
-class AlbumListFragment : Fragment(R.layout.album_list_fragment) {
+class AlbumListFragment : BrowseSupportFragment() {
 
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
     private val viewModel by viewModels<AlbumListViewModel> { producer { factory.get() } }
 
+    private val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(AlbumListFragmentBinding.bind(view)) {
-            viewModel.state.observe(viewLifecycleOwner) { onState(it) }
-        }
+        setupViews()
+        viewModel.state.observe(viewLifecycleOwner, ::onState)
         viewModel.action.observe(viewLifecycleOwner, ::onAction)
     }
 
-    private fun AlbumListFragmentBinding.onState(state: AlbumListState) {
-        Log.e("AlbumListFragment", "STATE: $state")
+    private fun setupViews() {
+        title = getString(R.string.album_list_title)
+        adapter = rowsAdapter
+    }
+
+    private fun onState(state: AlbumListState) {
+        rowsAdapter.setItems(
+            state.albums.map { album ->
+                ListRow(HeaderItem(album.title), ArrayObjectAdapter())
+            },
+            null
+        )
     }
 
     private fun onAction(action: AlbumListAction) {
