@@ -8,6 +8,7 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.SignInWithGoogle
 import com.sensorfields.livingscreen.android.databinding.AccountCreateFragmentBinding
@@ -43,6 +44,8 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
             signInWithGoogle.launch(
                 GoogleSignInOptions.Builder()
                     .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .requestScopes(Scope("https://www.googleapis.com/auth/photoslibrary.readonly"))
                     .build()
             )
         }

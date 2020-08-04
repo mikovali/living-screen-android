@@ -63,7 +63,7 @@ object ApiModule {
     @Provides
     fun retrofit(json: Json): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
+            .baseUrl("https://photoslibrary.googleapis.com/v1/")
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().apply {
