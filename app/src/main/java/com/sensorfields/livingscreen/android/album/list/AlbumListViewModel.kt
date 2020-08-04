@@ -9,6 +9,7 @@ import com.sensorfields.livingscreen.android.ActionLiveData
 import com.sensorfields.livingscreen.android.domain.AccountRepository
 import com.sensorfields.livingscreen.android.domain.AlbumRepository
 import com.sensorfields.livingscreen.android.reduceValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ class AlbumListViewModel @Inject constructor(
     }
 
     private fun refreshAlbums() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) { // TODO remove dispatcher when interceptor
             try {
                 albumRepository.refreshAlbums()
             } catch (e: Exception) {

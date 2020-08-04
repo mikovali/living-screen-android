@@ -42,7 +42,8 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
     private fun AccountCreateFragmentBinding.setupViews() {
         googleSignInButton.setOnClickListener {
             signInWithGoogle.launch(
-                GoogleSignInOptions.Builder()
+                // TODO think about options
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .requestScopes(Scope("https://www.googleapis.com/auth/photoslibrary.readonly"))
