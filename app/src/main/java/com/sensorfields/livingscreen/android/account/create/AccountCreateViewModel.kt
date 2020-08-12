@@ -1,18 +1,18 @@
 package com.sensorfields.livingscreen.android.account.create
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.AccountRepository
+import com.sensorfields.livingscreen.android.domain.usecase.SignInWithGoogleUseCase
 import com.sensorfields.livingscreen.android.reduceValue
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AccountCreateViewModel @Inject constructor(
-    private val accountRepository: AccountRepository
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData<AccountCreateState>(AccountCreateState())
@@ -24,13 +24,12 @@ class AccountCreateViewModel @Inject constructor(
     fun signInWithGoogle(idToken: String) {
         viewModelScope.launch {
             _state.reduceValue { copy(isInProgress = true) }
-            try {
-                accountRepository.signInWithGoogle(idToken)
-                _action.postValue(AccountCreateAction.NavigateToMain)
-            } catch (e: Exception) {
-                _state.reduceValue { copy(isInProgress = false) }
-                Log.e("AAA", "ERROR ON SIGN IN WITH GOOGLE", e)
-                // TODO error
+            when (signInWithGoogleUseCase(idToken)) {
+                is Either.Right -> _action.postValue(AccountCreateAction.NavigateToMain)
+                is Either.Left -> {
+                    _state.reduceValue { copy(isInProgress = false) }
+                    // TODO error
+                }
             }
         }
     }

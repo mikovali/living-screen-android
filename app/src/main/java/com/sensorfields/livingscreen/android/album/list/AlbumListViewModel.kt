@@ -1,13 +1,14 @@
 package com.sensorfields.livingscreen.android.album.list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.AccountRepository
-import com.sensorfields.livingscreen.android.domain.AlbumRepository
+import com.sensorfields.livingscreen.android.domain.usecase.ObserveAccountUseCase
+import com.sensorfields.livingscreen.android.domain.usecase.ObserveAlbumsUseCase
+import com.sensorfields.livingscreen.android.domain.usecase.RefreshAlbumsUseCase
 import com.sensorfields.livingscreen.android.reduceValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -16,8 +17,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlbumListViewModel @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val albumRepository: AlbumRepository
+    private val observeAccountUseCase: ObserveAccountUseCase,
+    private val observeAlbumsUseCase: ObserveAlbumsUseCase,
+    private val refreshAlbumsUseCase: RefreshAlbumsUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData<AlbumListState>(AlbumListState())
@@ -33,7 +35,7 @@ class AlbumListViewModel @Inject constructor(
     }
 
     private fun observeAccount() {
-        accountRepository.observeAccount()
+        observeAccountUseCase()
             .onEach { account ->
                 if (account == null) _action.postValue(AlbumListAction.NavigateToAccountCreate)
             }
@@ -41,7 +43,7 @@ class AlbumListViewModel @Inject constructor(
     }
 
     private fun observeAlbums() {
-        albumRepository.observeAlbums()
+        observeAlbumsUseCase()
             .onEach { albums ->
                 _state.reduceValue { copy(albums = albums) }
             }
@@ -50,10 +52,10 @@ class AlbumListViewModel @Inject constructor(
 
     private fun refreshAlbums() {
         viewModelScope.launch(Dispatchers.IO) { // TODO remove dispatcher when interceptor
-            try {
-                albumRepository.refreshAlbums()
-            } catch (e: Exception) {
-                Log.e("AlbumListViewModel", "refreshAlbums", e)
+            when (refreshAlbumsUseCase()) {
+                is Either.Left -> {
+                    // TODO error
+                }
             }
         }
     }
