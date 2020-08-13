@@ -7,6 +7,8 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
+    id("com.google.firebase.appdistribution")
 }
 
 android {
@@ -16,11 +18,25 @@ android {
         minSdkVersion(21)
         targetSdkVersion(29)
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0.0${property("appVersionNameSuffix")}"
         kapt {
             arguments {
                 arg("room.schemaLocation", "$projectDir/schemas")
                 arg("room.incremental", "true")
+            }
+        }
+    }
+    signingConfigs {
+        maybeCreate("debug").apply {
+            storeFile = File(projectDir, "debug.keystore")
+        }
+    }
+    buildTypes {
+        maybeCreate("debug").apply {
+            applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs["debug"]
+            firebaseAppDistribution {
+                groups = "debug"
             }
         }
     }
@@ -50,6 +66,9 @@ dependencies {
     kapt("androidx.room:room-compiler:2.2.5")
 
     implementation("com.google.firebase:firebase-auth-ktx:19.3.2")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:17.1.1")
+    implementation("com.google.firebase:firebase-analytics-ktx:17.4.4")
+
     implementation("com.google.android.gms:play-services-auth:18.1.0")
 
     implementation("com.google.dagger:hilt-android:2.28.3-alpha")

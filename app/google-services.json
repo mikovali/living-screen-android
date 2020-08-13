@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:677963099647:android:972bdbef117eb3a346cbca",
+        "mobilesdk_app_id": "1:677963099647:android:1d76268a46fcac0d46cbca",
         "android_client_info": {
-          "package_name": "com.sensorfields.livingscreen"
+          "package_name": "com.sensorfields.livingscreen.debug"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "677963099647-rnqm33sk8ah9hgoilsm5tujo2avckktk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sensorfields.livingscreen.debug",
+            "certificate_hash": "2596d4a016b6f35849aebe8b17790147cd19160e"
+          }
+        },
         {
           "client_id": "677963099647-etu1of0brt05ku42d526t1isd2clvitt.apps.googleusercontent.com",
           "client_type": 3

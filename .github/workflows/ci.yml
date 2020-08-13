@@ -1,0 +1,21 @@
+name: CI
+on: [push]
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint
+        run: ./gradlew --no-daemon clean app:lintDebug
+      - name: Create credentials
+        env:
+          CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: echo $CREDENTIALS -> credentials
+      - name: Deploy
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials
+        run: ./gradlew --no-daemon app:assembleDebug app:appDistributionUploadDebug -PappVersionNameSuffix=.$GITHUB_RUN_NUMBER
+      - name: Delete credentials
+        run: rm credentials
