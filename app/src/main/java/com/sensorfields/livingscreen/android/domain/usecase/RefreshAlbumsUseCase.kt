@@ -6,6 +6,7 @@ import arrow.core.left
 import arrow.core.right
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.remote.AlbumApi
 import dagger.Reusable
@@ -31,6 +32,7 @@ class RefreshAlbumsUseCase @Inject constructor(
             }
             Unit.right()
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Error.General.left()
         }
     }

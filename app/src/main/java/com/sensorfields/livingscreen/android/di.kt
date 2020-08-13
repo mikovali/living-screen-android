@@ -8,19 +8,17 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
 import com.sensorfields.livingscreen.android.domain.data.remote.AlbumApi
-import com.sensorfields.livingscreen.android.domain.data.remote.GetAlbumsResponse
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
-import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -79,15 +77,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun albumApi(json: Json): AlbumApi {
-        return object : AlbumApi {
-            @OptIn(ImplicitReflectionSerializer::class)
-            override suspend fun getAlbums(authorization: String): GetAlbumsResponse {
-                delay(1000L)
-                return json.fromJson(json.parseJson(getAlbumsResponse))
-            }
-        }
-    }
+    fun albumApi(retrofit: Retrofit): AlbumApi = retrofit.create()
 }
 
 private val getAlbumsResponse = """

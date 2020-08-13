@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sensorfields.livingscreen.android.await
 import dagger.Reusable
 import javax.inject.Inject
@@ -18,6 +19,7 @@ class SignInWithGoogleUseCase @Inject constructor(private val firebaseAuth: Fire
                 .await()
             Unit.right()
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Error.General.left()
         }
     }
