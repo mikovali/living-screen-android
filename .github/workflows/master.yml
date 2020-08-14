@@ -1,18 +1,16 @@
-name: CI
-on: [push]
+name: CI for master branch
+on:
+  push:
+    branches: [master]
 
 jobs:
-  check:
-    name: Check
+  master:
+    name: Check and deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run all checks
         run: ./gradlew --no-daemon clean check
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
       - name: Create credentials file
         env:
           CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
