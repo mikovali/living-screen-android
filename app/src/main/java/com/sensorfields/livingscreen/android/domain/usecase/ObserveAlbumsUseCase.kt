@@ -11,7 +11,17 @@ import javax.inject.Inject
 @Reusable
 class ObserveAlbumsUseCase @Inject constructor(private val albumDao: AlbumDao) {
 
-    operator fun invoke(): Flow<List<Album>> {
-        return albumDao.observeAlbums().map { it.toModels() }
+    operator fun invoke(): Flow<Result> {
+        return albumDao.observeAlbums().map { albums ->
+            Result(
+                albums = albums.filter { !it.isShared }.toModels(),
+                sharedAlbums = albums.filter { it.isShared }.toModels()
+            )
+        }
     }
+
+    data class Result(
+        val albums: List<Album>,
+        val sharedAlbums: List<Album>
+    )
 }

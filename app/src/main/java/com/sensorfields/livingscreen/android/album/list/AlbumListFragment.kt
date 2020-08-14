@@ -5,9 +5,11 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
+import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.sensorfields.livingscreen.android.R
@@ -41,8 +43,17 @@ class AlbumListFragment : BrowseSupportFragment() {
 
     private fun onState(state: AlbumListState) {
         rowsAdapter.setItems(
-            state.albums.map { album ->
-                ListRow(HeaderItem(album.title), ArrayObjectAdapter())
+            listOf(
+                ListRow(HeaderItem(getString(R.string.album_list_all)), ArrayObjectAdapter()),
+                DividerRow(),
+                SectionRow(getString(R.string.album_list_albums))
+            ) + state.albums.map { album ->
+                ListRow(HeaderItem(formatAlbumTitle(album.title)), ArrayObjectAdapter())
+            } + listOf(
+                DividerRow(),
+                SectionRow(getString(R.string.album_list_shared_albums))
+            ) + state.sharedAlbums.map { album ->
+                ListRow(HeaderItem(formatAlbumTitle(album.title)), ArrayObjectAdapter())
             },
             null
         )
@@ -54,5 +65,9 @@ class AlbumListFragment : BrowseSupportFragment() {
                 findNavController().navigate(AlbumListFragmentDirections.accountCreate())
             }
         }
+    }
+
+    private fun formatAlbumTitle(title: String): String {
+        return if (title.isBlank()) getString(R.string.album_list_album_title_blank) else title
     }
 }

@@ -44,8 +44,13 @@ class AlbumListViewModel @Inject constructor(
 
     private fun observeAlbums() {
         observeAlbumsUseCase()
-            .onEach { albums ->
-                _state.reduceValue { copy(albums = albums) }
+            .onEach { result ->
+                _state.reduceValue {
+                    copy(
+                        albums = result.albums,
+                        sharedAlbums = result.sharedAlbums
+                    )
+                }
             }
             .launchIn(viewModelScope)
     }
