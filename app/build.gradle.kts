@@ -9,6 +9,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.appdistribution")
+    id("io.gitlab.arturbosch.detekt") version "1.11.0"
 }
 
 android {
@@ -54,6 +55,10 @@ android {
 
 androidExtensions {
     features = setOf("parcelize")
+}
+
+detekt {
+    buildUponDefaultConfig = true
 }
 
 dependencies {

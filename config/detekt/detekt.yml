@@ -1,0 +1,7 @@
+complexity:
+  TooManyFunctions:
+    ignorePrivate: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
