@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("plugin.serialization") version "1.4.0"
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
@@ -64,15 +64,16 @@ detekt {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation("androidx.fragment:fragment-ktx:1.3.0-alpha07")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
+    implementation("androidx.fragment:fragment-ktx:1.3.0-alpha08")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 
     implementation("com.google.firebase:firebase-auth-ktx:19.3.2")
-    implementation("com.google.firebase:firebase-crashlytics-ktx:17.1.1")
-    implementation("com.google.firebase:firebase-analytics-ktx:17.4.4")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:17.2.1")
+    implementation("com.google.firebase:firebase-analytics-ktx:17.5.0")
 
     implementation("com.google.android.gms:play-services-auth:18.1.0")
 
@@ -83,5 +84,5 @@ dependencies {
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.5.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0")
 }

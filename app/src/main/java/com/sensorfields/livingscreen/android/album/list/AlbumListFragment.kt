@@ -7,8 +7,8 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
+import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -28,6 +28,12 @@ class AlbumListFragment : BrowseSupportFragment() {
     private val viewModel by viewModels<AlbumListViewModel> { producer { factory.get() } }
 
     private val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+    private val mediaItemGridFragmentFactory = object : FragmentFactory<MediaItemGridFragment>() {
+        private val mediaItemGridFragment = MediaItemGridFragment()
+        override fun createFragment(row: Any?): MediaItemGridFragment {
+            return mediaItemGridFragment
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,21 +45,22 @@ class AlbumListFragment : BrowseSupportFragment() {
     private fun setupViews() {
         title = getString(R.string.album_list_title)
         adapter = rowsAdapter
+        mainFragmentRegistry.registerFragment(PageRow::class.java, mediaItemGridFragmentFactory)
     }
 
     private fun onState(state: AlbumListState) {
         rowsAdapter.setItems(
             listOf(
-                ListRow(HeaderItem(getString(R.string.album_list_all)), ArrayObjectAdapter()),
+                PageRow(HeaderItem(getString(R.string.album_list_all))),
                 DividerRow(),
                 SectionRow(getString(R.string.album_list_albums))
             ) + state.albums.map { album ->
-                ListRow(HeaderItem(formatAlbumTitle(album.title)), ArrayObjectAdapter())
+                PageRow(HeaderItem(formatAlbumTitle(album.title)))
             } + listOf(
                 DividerRow(),
                 SectionRow(getString(R.string.album_list_shared_albums))
             ) + state.sharedAlbums.map { album ->
-                ListRow(HeaderItem(formatAlbumTitle(album.title)), ArrayObjectAdapter())
+                PageRow(HeaderItem(formatAlbumTitle(album.title)))
             },
             null
         )
