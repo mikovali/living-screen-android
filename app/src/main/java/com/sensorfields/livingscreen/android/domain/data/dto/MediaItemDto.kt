@@ -1,6 +1,5 @@
 package com.sensorfields.livingscreen.android.domain.data.dto
 
-import androidx.core.net.toUri
 import com.sensorfields.livingscreen.android.domain.MediaItem
 import kotlinx.serialization.Serializable
 
@@ -14,7 +13,7 @@ data class MediaItemDto(
 fun MediaItemDto.toModel(): MediaItem {
     return MediaItem(
         id = id,
-        thumbnail = "$baseUrl=w1024-h768-c".toUri(), // TODO move
+        baseUrl = baseUrl,
         fileName = filename
     )
 }
