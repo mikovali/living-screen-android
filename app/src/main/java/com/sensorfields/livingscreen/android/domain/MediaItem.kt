@@ -1,3 +1,9 @@
 package com.sensorfields.livingscreen.android.domain
 
-data class MediaItem(val id: String, val fileName: String)
+import android.net.Uri
+
+data class MediaItem(
+    val id: String,
+    val thumbnail: Uri,
+    val fileName: String
+)

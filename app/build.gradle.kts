@@ -9,7 +9,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.appdistribution")
-    id("io.gitlab.arturbosch.detekt") version "1.11.0"
+    id("io.gitlab.arturbosch.detekt") version "1.11.2"
 }
 
 android {
@@ -82,7 +82,9 @@ dependencies {
 
     implementation("io.arrow-kt:arrow-core-data:0.10.5")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.8.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0")
+
+    implementation("com.github.bumptech.glide:glide:4.11.0")
 }
