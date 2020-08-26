@@ -7,9 +7,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
-import com.sensorfields.livingscreen.android.domain.data.remote.AlbumApi
+import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
+import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosAuthenticator
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -59,13 +61,17 @@ object DbModule {
 @InstallIn(ApplicationComponent::class)
 object ApiModule {
 
-    @Singleton
+    @Reusable
     @Provides
-    fun retrofit(json: Json): Retrofit {
+    fun googlePhotosApi(
+        json: Json,
+        googlePhotosAuthenticator: GooglePhotosAuthenticator
+    ): GooglePhotosApi {
         return Retrofit.Builder()
             .baseUrl("https://photoslibrary.googleapis.com/v1/")
             .client(
                 OkHttpClient.Builder()
+                    .addInterceptor(googlePhotosAuthenticator)
                     .addInterceptor(HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })
@@ -73,9 +79,6 @@ object ApiModule {
             )
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
+            .create()
     }
-
-    @Singleton
-    @Provides
-    fun albumApi(retrofit: Retrofit): AlbumApi = retrofit.create()
 }
