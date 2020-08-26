@@ -44,14 +44,20 @@ class MediaItemGridFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = mediaItemsAdapter
-        viewModel.observeMediaItems(null).observe(viewLifecycleOwner) { mediaItems ->
-            mediaItemsAdapter.setItems(mediaItems, null)
-        }
+        setupViews()
+        viewModel.observeMediaItems(null).observe(viewLifecycleOwner, ::onMediaItems)
     }
 
     override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> {
         return mainFragmentAdapter
+    }
+
+    private fun setupViews() {
+        adapter = mediaItemsAdapter
+    }
+
+    private fun onMediaItems(mediaItems: List<MediaItem>) {
+        mediaItemsAdapter.setItems(mediaItems, null)
     }
 }
 
