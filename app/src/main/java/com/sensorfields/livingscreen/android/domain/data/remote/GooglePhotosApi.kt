@@ -6,10 +6,7 @@ import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Header
 
-/**
- * TODO headers with interceptor, rename to GooglePhotosApi
- */
-interface AlbumApi {
+interface GooglePhotosApi {
 
     @GET("albums")
     suspend fun getAlbums(@Header("Authorization") authorization: String): GetAlbumsResponse

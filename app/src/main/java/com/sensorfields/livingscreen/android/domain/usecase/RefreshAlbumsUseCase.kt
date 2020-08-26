@@ -8,7 +8,7 @@ import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
-import com.sensorfields.livingscreen.android.domain.data.remote.AlbumApi
+import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @Reusable
 class RefreshAlbumsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val albumApi: AlbumApi,
+    private val googlePhotosApi: GooglePhotosApi,
     private val albumDao: AlbumDao
 ) {
     suspend operator fun invoke(): Either<Error, Unit> {
@@ -28,8 +28,8 @@ class RefreshAlbumsUseCase @Inject constructor(
                     account.account,
                     "oauth2:${account.requestedScopes.joinToString(" ") { it.scopeUri }}"
                 )
-                val albums = albumApi.getAlbums(token).albums
-                val sharedAlbums = albumApi.getSharedAlbums(token).sharedAlbums
+                val albums = googlePhotosApi.getAlbums(token).albums
+                val sharedAlbums = googlePhotosApi.getSharedAlbums(token).sharedAlbums
                     .filter { albums.find { album -> album.id == it.id } == null }
                     .map { it.copy(isShared = true) }
                 albumDao.replaceAlbums(albums + sharedAlbums)

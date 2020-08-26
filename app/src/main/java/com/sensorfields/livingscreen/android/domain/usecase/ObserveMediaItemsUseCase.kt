@@ -7,7 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.sensorfields.livingscreen.android.domain.Album
 import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.data.dto.toModels
-import com.sensorfields.livingscreen.android.domain.data.remote.AlbumApi
+import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class ObserveMediaItemsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val albumApi: AlbumApi
+    private val googlePhotosApi: GooglePhotosApi
 ) {
     operator fun invoke(album: Album?): Flow<List<MediaItem>> = flow {
         try {
@@ -26,10 +26,7 @@ class ObserveMediaItemsUseCase @Inject constructor(
                     account.account,
                     "oauth2:${account.requestedScopes.joinToString(" ") { it.scopeUri }}"
                 )
-                emit(
-                    albumApi.searchMediaItems(token)
-                        .mediaItems.toModels()
-                )
+                emit(googlePhotosApi.searchMediaItems(token).mediaItems.toModels())
             }
         } catch (e: Exception) {
             Log.e("ObserveMediaItemsUseCas", "error", e)
