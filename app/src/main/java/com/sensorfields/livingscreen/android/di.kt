@@ -8,13 +8,13 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
 import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
+import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -61,14 +61,17 @@ object DbModule {
 @InstallIn(ApplicationComponent::class)
 object ApiModule {
 
-    @ExperimentalSerializationApi
     @Reusable
     @Provides
-    fun googlePhotosApi(json: Json): GooglePhotosApi {
+    fun googlePhotosApi(
+        json: Json,
+        googlePhotosAuthenticator: GooglePhotosAuthenticator
+    ): GooglePhotosApi {
         return Retrofit.Builder()
             .baseUrl("https://photoslibrary.googleapis.com/v1/")
             .client(
                 OkHttpClient.Builder()
+                    .addInterceptor(googlePhotosAuthenticator)
                     .addInterceptor(HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })
