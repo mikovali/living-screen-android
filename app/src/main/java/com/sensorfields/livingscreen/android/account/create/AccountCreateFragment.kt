@@ -25,6 +25,8 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
 
     private val viewModel by viewModels<AccountCreateViewModel> { producer { factory.get() } }
 
+    private val viewBinding by lazy { AccountCreateFragmentBinding.bind(requireView()) }
+
     private val signInWithGoogle =
         registerForActivityResult(SignInWithGoogle()) { account: GoogleSignInAccount? ->
             account?.idToken?.let { idToken -> viewModel.signInWithGoogle(idToken) }
@@ -32,17 +34,14 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(AccountCreateFragmentBinding.bind(view)) {
-            setupViews()
-            viewModel.state.observe(viewLifecycleOwner) { onState(it) }
-        }
+        setupViews()
+        viewModel.state.observe(viewLifecycleOwner, ::onState)
         viewModel.action.observe(viewLifecycleOwner, ::onAction)
     }
 
-    private fun AccountCreateFragmentBinding.setupViews() {
-        googleSignInButton.setOnClickListener {
+    private fun setupViews() {
+        viewBinding.googleSignInButton.setOnClickListener {
             signInWithGoogle.launch(
-                // TODO think about options
                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -52,8 +51,8 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
         }
     }
 
-    private fun AccountCreateFragmentBinding.onState(state: AccountCreateState) {
-        googleSignInButton.isEnabled = !state.isInProgress
+    private fun onState(state: AccountCreateState) {
+        viewBinding.googleSignInButton.isEnabled = !state.isInProgress
     }
 
     private fun onAction(action: AccountCreateAction) {

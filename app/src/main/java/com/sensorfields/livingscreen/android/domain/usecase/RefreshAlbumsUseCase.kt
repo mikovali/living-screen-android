@@ -23,12 +23,16 @@ class RefreshAlbumsUseCase @Inject constructor(
         return try {
             GoogleSignIn.getLastSignedInAccount(context)?.let { account ->
                 // TODO should be cached
-                val token = GoogleAuthUtil.getToken(
+                val token = "Bearer " + GoogleAuthUtil.getToken(
                     context,
                     account.account,
                     "oauth2:${account.requestedScopes.joinToString(" ") { it.scopeUri }}"
                 )
-                albumDao.replaceAlbums(albumApi.getAlbums("Bearer $token").albums)
+                val albums = albumApi.getAlbums(token).albums
+                val sharedAlbums = albumApi.getSharedAlbums(token).sharedAlbums
+                    .filter { albums.find { album -> album.id == it.id } == null }
+                    .map { it.copy(isShared = true) }
+                albumDao.replaceAlbums(albums + sharedAlbums)
             }
             Unit.right()
         } catch (e: Exception) {

@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 @Entity
 data class AlbumDto(
     @PrimaryKey val id: String,
-    val title: String
+    val title: String = "",
+    val isShared: Boolean = false
 )
 
 fun AlbumDto.toModel(): Album {

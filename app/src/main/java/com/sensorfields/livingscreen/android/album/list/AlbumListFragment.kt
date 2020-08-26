@@ -5,9 +5,11 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.DividerRow
 import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
+import androidx.leanback.widget.PageRow
+import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.sensorfields.livingscreen.android.R
@@ -26,6 +28,12 @@ class AlbumListFragment : BrowseSupportFragment() {
     private val viewModel by viewModels<AlbumListViewModel> { producer { factory.get() } }
 
     private val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+    private val mediaItemGridFragmentFactory = object : FragmentFactory<MediaItemGridFragment>() {
+        private val mediaItemGridFragment = MediaItemGridFragment()
+        override fun createFragment(row: Any?): MediaItemGridFragment {
+            return mediaItemGridFragment
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,12 +45,22 @@ class AlbumListFragment : BrowseSupportFragment() {
     private fun setupViews() {
         title = getString(R.string.album_list_title)
         adapter = rowsAdapter
+        mainFragmentRegistry.registerFragment(PageRow::class.java, mediaItemGridFragmentFactory)
     }
 
     private fun onState(state: AlbumListState) {
         rowsAdapter.setItems(
-            state.albums.map { album ->
-                ListRow(HeaderItem(album.title), ArrayObjectAdapter())
+            listOf(
+                PageRow(HeaderItem(getString(R.string.album_list_all))),
+                DividerRow(),
+                SectionRow(getString(R.string.album_list_albums))
+            ) + state.albums.map { album ->
+                PageRow(HeaderItem(formatAlbumTitle(album.title)))
+            } + listOf(
+                DividerRow(),
+                SectionRow(getString(R.string.album_list_shared_albums))
+            ) + state.sharedAlbums.map { album ->
+                PageRow(HeaderItem(formatAlbumTitle(album.title)))
             },
             null
         )
@@ -54,5 +72,9 @@ class AlbumListFragment : BrowseSupportFragment() {
                 findNavController().navigate(AlbumListFragmentDirections.accountCreate())
             }
         }
+    }
+
+    private fun formatAlbumTitle(title: String): String {
+        return if (title.isBlank()) getString(R.string.album_list_album_title_blank) else title
     }
 }

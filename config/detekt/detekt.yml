@@ -2,6 +2,10 @@ complexity:
   TooManyFunctions:
     ignorePrivate: true
 
+empty-blocks:
+  EmptyFunctionBlock:
+    ignoreOverridden: true
+
 exceptions:
   TooGenericExceptionCaught:
     active: false

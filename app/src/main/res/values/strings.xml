@@ -3,6 +3,10 @@
     <string name="application_name">Living Screen</string>
 
     <string name="album_list_title">Albums</string>
+    <string name="album_list_all">All Photos</string>
+    <string name="album_list_albums">Albums</string>
+    <string name="album_list_shared_albums">Shared Albums</string>
+    <string name="album_list_album_title_blank">Shared album</string>
 
     <string name="account_create_title">Login</string>
 
