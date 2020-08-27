@@ -14,6 +14,7 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.domain.MediaItem
@@ -54,6 +55,11 @@ class MediaItemGridFragment :
 
     private fun setupViews() {
         adapter = mediaItemsAdapter
+        setOnItemViewClickedListener { _, item, _, _ ->
+            findNavController().navigate(
+                AlbumListFragmentDirections.mediaItemDisplay(item as MediaItem)
+            )
+        }
     }
 
     private fun onMediaItems(mediaItems: List<MediaItem>) {

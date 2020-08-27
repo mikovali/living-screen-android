@@ -17,7 +17,23 @@
 
     <fragment
         android:id="@+id/albumListFragment"
-        android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment" />
+        android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment">
+
+        <action
+            android:id="@+id/mediaItemDisplay"
+            app:destination="@id/mediaItemDisplayFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaItemDisplayFragment"
+        android:name="com.sensorfields.livingscreen.android.album.list.MediaItemDisplayFragment">
+
+        <argument
+            android:name="mediaItem"
+            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/accountCreateFragment"
