@@ -1,0 +1,104 @@
+package com.sensorfields.livingscreen.android.album.list
+
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.ImageView
+import androidx.leanback.app.DetailsSupportFragment
+import androidx.leanback.widget.AbstractDetailsDescriptionPresenter
+import androidx.leanback.widget.Action
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.DetailsOverviewLogoPresenter
+import androidx.leanback.widget.DetailsOverviewRow
+import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.sensorfields.livingscreen.android.R
+import com.sensorfields.livingscreen.android.domain.MediaItem
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class MediaItemDetailsFragment : DetailsSupportFragment() {
+
+    private val args by navArgs<MediaItemDetailsFragmentArgs>()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter = ArrayObjectAdapter(
+            FullWidthDetailsOverviewRowPresenter(Presenter(), LogoPresenter())
+        ).apply {
+            add(DetailsOverviewRow(args.mediaItem).apply {
+                with(actionsAdapter as ArrayObjectAdapter) {
+                    add(Action(ID1, "Do something yo"))
+                    add(
+                        Action(
+                            ID2,
+                            "Do something else yo",
+                            "With yo this",
+                            requireContext().getDrawable(R.drawable.ic_baseline_broken_image_24)
+                        )
+                    )
+                    add(Action(ID3, "Do something yo completely different").apply {
+                        icon = requireContext().getDrawable(R.drawable.ic_baseline_photo_24)
+                    })
+                }
+            })
+        }
+    }
+}
+
+private class Presenter : AbstractDetailsDescriptionPresenter() {
+
+    override fun onBindDescription(vh: ViewHolder, item: Any) {
+        val mediaItem = item as MediaItem
+        vh.title.text = mediaItem.fileName
+        vh.subtitle.text = "Subtitle yo yo"
+        vh.body.text = "Text body yo\nYo YO Yo\nSsasdasd"
+    }
+}
+
+private class LogoPresenter : DetailsOverviewLogoPresenter() {
+
+    override fun onBindViewHolder(
+        viewHolder: androidx.leanback.widget.Presenter.ViewHolder,
+        item: Any
+    ) {
+        val mediaItem = (item as DetailsOverviewRow).item as MediaItem
+        val vh = viewHolder as ViewHolder
+        val imageView = vh.view as ImageView
+        Glide.with(imageView)
+            .load("${mediaItem.baseUrl}=w${imageView.maxWidth}-h${imageView.maxHeight}")
+            .into(object : DrawableImageViewTarget(imageView) {
+                override fun setResource(resource: Drawable?) {
+                    super.setResource(resource)
+                    if (resource == null) return
+                    view.viewTreeObserver.addOnGlobalLayoutListener(
+                        object : ViewTreeObserver.OnGlobalLayoutListener {
+                            override fun onGlobalLayout() {
+                                view.layoutParams = view.layoutParams.apply {
+                                    width = view.width
+                                    height = view.height
+                                }
+                                vh.parentPresenter.notifyOnBindLogo(vh.parentViewHolder)
+                                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            }
+                        }
+                    )
+                }
+            })
+    }
+
+    override fun onUnbindViewHolder(viewHolder: androidx.leanback.widget.Presenter.ViewHolder) {
+        Glide.with(viewHolder.view).clear(viewHolder.view)
+    }
+
+    override fun isBoundToImage(viewHolder: ViewHolder, row: DetailsOverviewRow?): Boolean {
+        return (viewHolder.view as ImageView).drawable != null
+    }
+}
+
+private const val ID1 = 1L
+private const val ID2 = 2L
+private const val ID3 = 3L
