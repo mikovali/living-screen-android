@@ -57,7 +57,7 @@ class MediaItemGridFragment :
         adapter = mediaItemsAdapter
         setOnItemViewClickedListener { _, item, _, _ ->
             findNavController().navigate(
-                AlbumListFragmentDirections.mediaItemDisplay(item as MediaItem)
+                AlbumListFragmentDirections.mediaItemDetails(item as MediaItem)
             )
         }
     }
