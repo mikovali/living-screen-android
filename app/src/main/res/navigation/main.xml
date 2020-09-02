@@ -20,6 +20,20 @@
         android:name="com.sensorfields.livingscreen.android.album.list.AlbumListFragment">
 
         <action
+            android:id="@+id/mediaItemView"
+            app:destination="@id/mediaItemViewFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaItemViewFragment"
+        android:name="com.sensorfields.livingscreen.android.album.list.MediaItemViewFragment">
+
+        <argument
+            android:name="mediaItem"
+            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+
+        <action
             android:id="@+id/mediaItemDetails"
             app:destination="@id/mediaItemDetailsFragment" />
 

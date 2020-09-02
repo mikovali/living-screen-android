@@ -91,4 +91,8 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0")
 
     implementation("com.github.bumptech.glide:glide:4.11.0")
+
+    implementation("com.google.android.exoplayer:exoplayer-core:2.11.8")
+    implementation("com.google.android.exoplayer:extension-okhttp:2.11.8")
+    implementation("com.google.android.exoplayer:extension-leanback:2.11.8")
 }
