@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
     implementation("androidx.fragment:fragment-ktx:1.3.0-alpha08")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.1")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
@@ -91,4 +92,8 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0")
 
     implementation("com.github.bumptech.glide:glide:4.11.0")
+
+    implementation("com.google.android.exoplayer:exoplayer-core:2.11.8")
+    implementation("com.google.android.exoplayer:extension-okhttp:2.11.8")
+    implementation("com.google.android.exoplayer:extension-leanback:2.11.8")
 }

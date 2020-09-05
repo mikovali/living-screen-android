@@ -56,9 +56,13 @@ class MediaItemGridFragment :
     private fun setupViews() {
         adapter = mediaItemsAdapter
         setOnItemViewClickedListener { _, item, _, _ ->
-            findNavController().navigate(
-                AlbumListFragmentDirections.mediaItemDetails(item as MediaItem)
-            )
+            with(item as MediaItem) {
+                val directions = when (type) {
+                    MediaItem.Type.Photo -> AlbumListFragmentDirections.mediaItemImageView(this)
+                    MediaItem.Type.Video -> AlbumListFragmentDirections.mediaItemView(this)
+                }
+                findNavController().navigate(directions)
+            }
         }
     }
 
