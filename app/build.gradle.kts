@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
     implementation("androidx.fragment:fragment-ktx:1.3.0-alpha08")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.1")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
