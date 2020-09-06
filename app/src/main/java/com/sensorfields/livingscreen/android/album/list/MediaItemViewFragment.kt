@@ -3,7 +3,6 @@ package com.sensorfields.livingscreen.android.album.list
 import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.media.PlaybackTransportControlGlue
@@ -13,11 +12,13 @@ import androidx.leanback.widget.PlaybackControlsRow
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.producer
 import okhttp3.OkHttpClient
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class MediaItemViewFragment : VideoSupportFragment() {
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
         producer { factory.get() }
     }
 

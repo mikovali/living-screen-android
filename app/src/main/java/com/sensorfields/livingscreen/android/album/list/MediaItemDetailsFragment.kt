@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.widget.AbstractDetailsDescriptionPresenter
 import androidx.leanback.widget.Action
@@ -16,6 +15,7 @@ import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.sensorfields.livingscreen.android.R
@@ -32,7 +32,7 @@ class MediaItemDetailsFragment : DetailsSupportFragment() {
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
         producer { factory.get() }
     }
 

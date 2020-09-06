@@ -4,9 +4,9 @@ import android.graphics.Point
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.databinding.MediaItemImageViewFragmentBinding
@@ -23,7 +23,7 @@ class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragm
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
         producer { factory.get() }
     }
 

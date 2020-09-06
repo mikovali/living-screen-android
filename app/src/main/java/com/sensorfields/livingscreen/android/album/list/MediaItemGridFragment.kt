@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -15,6 +14,7 @@ import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.domain.MediaItem
@@ -30,7 +30,7 @@ class MediaItemGridFragment :
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
         producer { factory.get() }
     }
 
