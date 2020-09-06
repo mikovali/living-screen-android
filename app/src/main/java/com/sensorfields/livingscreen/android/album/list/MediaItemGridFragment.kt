@@ -46,7 +46,7 @@ class MediaItemGridFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        viewModel.observeMediaItems(null).observe(viewLifecycleOwner, ::onMediaItems)
+        setupViewModel()
     }
 
     override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> {
@@ -56,18 +56,24 @@ class MediaItemGridFragment :
     private fun setupViews() {
         adapter = mediaItemsAdapter
         setOnItemViewClickedListener { _, item, _, _ ->
-            with(item as MediaItem) {
+            with(item as MediaItemGridState.Item) {
                 val directions = when (type) {
-                    MediaItem.Type.Photo -> AlbumListFragmentDirections.mediaItemImageView(this)
-                    MediaItem.Type.Video -> AlbumListFragmentDirections.mediaItemView(this)
+                    MediaItem.Type.Photo -> {
+                        AlbumListFragmentDirections.mediaItemImageView(item.index)
+                    }
+                    MediaItem.Type.Video -> AlbumListFragmentDirections.mediaItemView(item.index)
                 }
                 findNavController().navigate(directions)
             }
         }
     }
 
-    private fun onMediaItems(mediaItems: List<MediaItem>) {
-        mediaItemsAdapter.setItems(mediaItems, null)
+    private fun setupViewModel() {
+        viewModel.mediaItemGridState.observe(viewLifecycleOwner, ::onState)
+    }
+
+    private fun onState(state: MediaItemGridState) {
+        mediaItemsAdapter.setItems(state.items, null)
     }
 }
 
@@ -99,7 +105,7 @@ private class MediaItemPresenter : Presenter() {
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-        val mediaItem = item as MediaItem
+        val mediaItem = item as MediaItemGridState.Item
         with((viewHolder.view as ImageCardView)) {
             Glide.with(this)
                 .load("${mediaItem.baseUrl}=w${mainImageSize.x}-h${mainImageSize.y}-c")

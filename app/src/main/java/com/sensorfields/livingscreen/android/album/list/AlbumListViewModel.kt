@@ -4,18 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.Album
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveAccountUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveAlbumsUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveMediaItemsUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.RefreshAlbumsUseCase
 import com.sensorfields.livingscreen.android.reduceValue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +23,7 @@ class AlbumListViewModel @Inject constructor(
     private val observeAccountUseCase: ObserveAccountUseCase,
     private val observeAlbumsUseCase: ObserveAlbumsUseCase,
     private val refreshAlbumsUseCase: RefreshAlbumsUseCase,
-    private val observeMediaItemsUseCase: ObserveMediaItemsUseCase
+    observeMediaItemsUseCase: ObserveMediaItemsUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData<AlbumListState>(AlbumListState())
@@ -33,15 +32,35 @@ class AlbumListViewModel @Inject constructor(
     private val _action = ActionLiveData<AlbumListAction>()
     val action: LiveData<AlbumListAction> = _action
 
+    val mediaItemGridState: LiveData<MediaItemGridState> = observeMediaItemsUseCase(null)
+        .map { mediaItems ->
+            MediaItemGridState(
+                items = mediaItems.mapIndexed { index, mediaItem ->
+                    MediaItemGridState.Item(
+                        index = index,
+                        type = mediaItem.type,
+                        baseUrl = mediaItem.baseUrl,
+                        fileName = mediaItem.fileName
+                    )
+                }
+            )
+        }
+        .asLiveData(viewModelScope.coroutineContext)
+
     init {
         observeAccount()
         observeAlbums()
         refreshAlbums()
     }
 
-    fun observeMediaItems(album: Album?): LiveData<List<MediaItem>> {
-        return observeMediaItemsUseCase(album)
-            .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+    fun getMediaItemViewState(index: Int): LiveData<MediaItemViewState> {
+        return mediaItemGridState.map { state ->
+            MediaItemViewState(
+                current = state.items[index],
+                previous = state.items.getOrNull(index - 1),
+                next = state.items.getOrNull(index + 1)
+            )
+        }
     }
 
     private fun observeAccount() {
@@ -65,10 +84,7 @@ class AlbumListViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    /**
-     * TODO remove dispatcher when interceptor
-     */
-    private fun refreshAlbums() = viewModelScope.launch(Dispatchers.IO) {
+    private fun refreshAlbums() = viewModelScope.launch {
         when (refreshAlbumsUseCase()) {
             is Either.Left -> {
                 // TODO error

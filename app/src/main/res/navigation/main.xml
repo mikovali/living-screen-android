@@ -34,8 +34,8 @@
         android:name="com.sensorfields.livingscreen.android.album.list.MediaItemViewFragment">
 
         <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:name="index"
+            app:argType="integer" />
 
         <action
             android:id="@+id/mediaItemDetails"
@@ -48,8 +48,8 @@
         android:name="com.sensorfields.livingscreen.android.album.list.MediaItemImageViewFragment">
 
         <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:name="index"
+            app:argType="integer" />
 
         <action
             android:id="@+id/mediaItemDetails"
@@ -62,8 +62,8 @@
         android:name="com.sensorfields.livingscreen.android.album.list.MediaItemDetailsFragment">
 
         <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:name="index"
+            app:argType="integer" />
 
     </fragment>
 

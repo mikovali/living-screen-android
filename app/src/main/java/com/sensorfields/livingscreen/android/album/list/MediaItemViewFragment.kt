@@ -3,12 +3,14 @@ package com.sensorfields.livingscreen.android.album.list
 import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -16,12 +18,21 @@ import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.producer
 import okhttp3.OkHttpClient
+import javax.inject.Inject
+import javax.inject.Provider
 
 class MediaItemViewFragment : VideoSupportFragment() {
 
     private val args by navArgs<MediaItemViewFragmentArgs>()
+
+    @Inject
+    lateinit var factory: Provider<AlbumListViewModel>
+
+    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+        producer { factory.get() }
+    }
 
     private lateinit var player: SimpleExoPlayer
 
@@ -33,10 +44,12 @@ class MediaItemViewFragment : VideoSupportFragment() {
         )
         player = SimpleExoPlayer.Builder(requireContext()).build()
 
-        PlayerGlue(this, player, mediaSourceFactory, args.mediaItem) {
-            findNavController().navigate(
-                MediaItemViewFragmentDirections.mediaItemDetails(args.mediaItem)
-            )
+        viewModel.getMediaItemViewState(args.index).observe(viewLifecycleOwner) { state ->
+            PlayerGlue(this, player, mediaSourceFactory, state.current) {
+                findNavController().navigate(
+                    MediaItemViewFragmentDirections.mediaItemDetails(state.current.index)
+                )
+            }
         }
     }
 
@@ -50,7 +63,7 @@ private class PlayerGlue(
     fragment: VideoSupportFragment,
     player: SimpleExoPlayer,
     mediaSourceFactory: MediaSourceFactory,
-    mediaItem: MediaItem,
+    item: MediaItemGridState.Item,
     private val moreActionsClicked: () -> Unit
 ) : PlaybackTransportControlGlue<LeanbackPlayerAdapter>(
     fragment.requireContext(),
@@ -60,11 +73,11 @@ private class PlayerGlue(
 
     init {
         host = VideoSupportFragmentGlueHost(fragment)
-        title = mediaItem.fileName
+        title = item.fileName
         isSeekEnabled = true
         playerAdapter.setPlaybackPreparer {
             player.prepare(
-                mediaSourceFactory.createMediaSource("${mediaItem.baseUrl}=dv".toUri())
+                mediaSourceFactory.createMediaSource("${item.baseUrl}=dv".toUri())
             )
         }
         play()
