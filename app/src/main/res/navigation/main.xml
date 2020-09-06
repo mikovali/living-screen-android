@@ -55,6 +55,16 @@
             android:id="@+id/mediaItemDetails"
             app:destination="@id/mediaItemDetailsFragment" />
 
+        <action
+            android:id="@+id/mediaItemView"
+            app:destination="@id/mediaItemViewFragment"
+            app:popUpTo="@id/albumListFragment" />
+
+        <action
+            android:id="@+id/mediaItemImageView"
+            app:destination="@id/mediaItemImageViewFragment"
+            app:popUpTo="@id/albumListFragment" />
+
     </fragment>
 
     <fragment
