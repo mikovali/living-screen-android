@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.databinding.MediaItemImageViewFragmentBinding
 import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.onViewCreated
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragm
         producer { factory.get() }
     }
 
-    private val viewBinding by lazy { MediaItemImageViewFragmentBinding.bind(requireView()) }
+    private val viewBinding by onViewCreated { MediaItemImageViewFragmentBinding.bind(it) }
 
     private val size by lazy {
         Point(
