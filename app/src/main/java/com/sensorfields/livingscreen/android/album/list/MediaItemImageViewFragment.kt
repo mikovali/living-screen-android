@@ -82,7 +82,7 @@ class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragm
                 MediaItemImageViewFragmentDirections.mediaItemImageView(item.index)
             }
             is MediaItem.Type.Video -> {
-                MediaItemViewFragmentDirections.mediaItemDetails(item.index)
+                MediaItemImageViewFragmentDirections.mediaItemView(item.index)
             }
         }
         findNavController().navigate(directions)

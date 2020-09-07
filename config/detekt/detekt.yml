@@ -1,4 +1,6 @@
 complexity:
+  LongParameterList:
+    active: false
   TooManyFunctions:
     ignorePrivate: true
 
