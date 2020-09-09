@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -56,15 +55,8 @@ class MediaItemGridFragment :
     private fun setupViews() {
         adapter = mediaItemsAdapter
         setOnItemViewClickedListener { _, item, _, _ ->
-            with(item as MediaItemGridState.Item) {
-                val directions = when (type) {
-                    MediaItem.Type.Photo -> {
-                        AlbumListFragmentDirections.mediaItemImageView(item.index)
-                    }
-                    MediaItem.Type.Video -> AlbumListFragmentDirections.mediaItemView(item.index)
-                }
-                findNavController().navigate(directions)
-            }
+            item as MediaItemGridState.Item
+            findNavController().navigate(AlbumListFragmentDirections.mediaItemView(item.index))
         }
     }
 

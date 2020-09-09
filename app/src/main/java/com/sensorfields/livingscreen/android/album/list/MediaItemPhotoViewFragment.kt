@@ -11,8 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.databinding.MediaItemImageViewFragmentBinding
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.databinding.MediaItemPhotoViewFragmentBinding
 import com.sensorfields.livingscreen.android.onViewCreated
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,9 +19,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @AndroidEntryPoint
-class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragment) {
+class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragment) {
 
-    private val args by navArgs<MediaItemImageViewFragmentArgs>()
+    private val args by navArgs<MediaItemViewFragmentArgs>()
 
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
@@ -31,7 +30,7 @@ class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragm
         producer { factory.get() }
     }
 
-    private val viewBinding by onViewCreated { MediaItemImageViewFragmentBinding.bind(it) }
+    private val viewBinding by onViewCreated { MediaItemPhotoViewFragmentBinding.bind(it) }
 
     private val size by lazy {
         Point(
@@ -77,20 +76,10 @@ class MediaItemImageViewFragment : Fragment(R.layout.media_item_image_view_fragm
     }
 
     private fun navigateToMediaItemView(item: MediaItemGridState.Item) {
-        val directions = when (item.type) {
-            is MediaItem.Type.Photo -> {
-                MediaItemImageViewFragmentDirections.mediaItemImageView(item.index)
-            }
-            is MediaItem.Type.Video -> {
-                MediaItemImageViewFragmentDirections.mediaItemView(item.index)
-            }
-        }
-        findNavController().navigate(directions)
+        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemView(item.index))
     }
 
     private fun onDetailsButtonClicked() {
-        findNavController().navigate(
-            MediaItemImageViewFragmentDirections.mediaItemDetails(args.index)
-        )
+        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemDetails(args.index))
     }
 }
