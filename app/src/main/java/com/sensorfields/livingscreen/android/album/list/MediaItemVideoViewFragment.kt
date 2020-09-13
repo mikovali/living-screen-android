@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.producer
+import com.sensorfields.livingscreen.android.viewState
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 import javax.inject.Provider
@@ -38,17 +39,14 @@ class MediaItemVideoViewFragment : VideoSupportFragment() {
         OkHttpDataSourceFactory(OkHttpClient(), null)
     )
 
-    private lateinit var player: SimpleExoPlayer
+    private val player by viewState(
+        create = { view -> SimpleExoPlayer.Builder(view.context).build() },
+        destroy = { release() }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        player = SimpleExoPlayer.Builder(requireContext()).build()
         setupViewModel()
-    }
-
-    override fun onDestroyView() {
-        player.release()
-        super.onDestroyView()
     }
 
     private fun setupViewModel() {

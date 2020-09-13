@@ -66,12 +66,14 @@ suspend fun <T> Task<T>.await(): T = suspendCoroutine { continuation ->
     addOnFailureListener { e -> continuation.resumeWithException(e) }
 }
 
-fun <T> onViewCreated(producer: (View) -> T): ReadOnlyProperty<Fragment, T> {
-    return FragmentOnViewCreatedDelegate(producer)
-}
+fun <T> viewState(
+    create: (View) -> T,
+    destroy: (T.() -> Unit)? = null
+): ReadOnlyProperty<Fragment, T> = FragmentOnViewCreatedDelegate(create, destroy)
 
 private class FragmentOnViewCreatedDelegate<T>(
-    private val producer: (View) -> T
+    private val create: (View) -> T,
+    private val destroy: (T.() -> Unit)? = null
 ) : ReadOnlyProperty<Fragment, T> {
 
     private var value: T? = null
@@ -81,12 +83,13 @@ private class FragmentOnViewCreatedDelegate<T>(
             thisRef.viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     if (event == Lifecycle.Event.ON_DESTROY) {
+                        value?.let { currentValue -> destroy?.invoke(currentValue) }
                         value = null
                         thisRef.viewLifecycleOwner.lifecycle.removeObserver(this)
                     }
                 }
             })
-            producer(thisRef.requireView()).also { value = it }
+            create(thisRef.requireView()).also { value = it }
         }
     }
 }

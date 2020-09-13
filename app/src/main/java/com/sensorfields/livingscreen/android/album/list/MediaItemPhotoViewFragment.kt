@@ -11,8 +11,8 @@ import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.databinding.MediaItemPhotoViewFragmentBinding
-import com.sensorfields.livingscreen.android.onViewCreated
 import com.sensorfields.livingscreen.android.producer
+import com.sensorfields.livingscreen.android.viewState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,7 +29,7 @@ class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragm
         producer { factory.get() }
     }
 
-    private val viewBinding by onViewCreated { MediaItemPhotoViewFragmentBinding.bind(it) }
+    private val viewBinding by viewState({ MediaItemPhotoViewFragmentBinding.bind(it) })
 
     private val size by lazy {
         Point(
