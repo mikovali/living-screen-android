@@ -3,7 +3,6 @@ package com.sensorfields.livingscreen.android.album.list
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.sensorfields.livingscreen.android.R
@@ -31,7 +30,7 @@ class MediaItemViewFragment : Fragment(R.layout.media_item_view_fragment) {
     }
 
     private fun setupViewModel() {
-        viewModel.getMediaItemViewState(args.index).observe(viewLifecycleOwner, ::onState)
+        onState(viewModel.getMediaItemViewState(args.index))
     }
 
     private fun onState(state: MediaItemViewState) {

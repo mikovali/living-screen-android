@@ -13,7 +13,6 @@ import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DetailsOverviewLogoPresenter
 import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
@@ -51,7 +50,7 @@ class MediaItemDetailsFragment : DetailsSupportFragment() {
     }
 
     private fun setupViewModel() {
-        viewModel.getMediaItemViewState(args.index).observe(viewLifecycleOwner, ::onState)
+        onState(viewModel.getMediaItemViewState(args.index))
     }
 
     private fun onState(state: MediaItemViewState) {

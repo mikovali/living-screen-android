@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
@@ -53,14 +52,13 @@ class AlbumListViewModel @Inject constructor(
         refreshAlbums()
     }
 
-    fun getMediaItemViewState(index: Int): LiveData<MediaItemViewState> {
-        return mediaItemGridState.map { state ->
-            MediaItemViewState(
-                current = state.items[index],
-                previous = state.items.getOrNull(index - 1),
-                next = state.items.getOrNull(index + 1)
-            )
-        }
+    fun getMediaItemViewState(index: Int): MediaItemViewState {
+        val state = mediaItemGridState.value!!
+        return MediaItemViewState(
+            current = state.items[index],
+            previous = state.items.getOrNull(index - 1),
+            next = state.items.getOrNull(index + 1)
+        )
     }
 
     private fun observeAccount() {

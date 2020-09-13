@@ -9,7 +9,6 @@ import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -35,32 +34,37 @@ class MediaItemVideoViewFragment : VideoSupportFragment() {
         producer { factory.get() }
     }
 
+    private val mediaSourceFactory = ProgressiveMediaSource.Factory(
+        OkHttpDataSourceFactory(OkHttpClient(), null)
+    )
+
     private lateinit var player: SimpleExoPlayer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val mediaSourceFactory = ProgressiveMediaSource.Factory(
-            OkHttpDataSourceFactory(OkHttpClient(), null)
-        )
         player = SimpleExoPlayer.Builder(requireContext()).build()
-
-        viewModel.getMediaItemViewState(args.index).observe(viewLifecycleOwner) { state ->
-            PlayerGlue(
-                this,
-                player,
-                mediaSourceFactory,
-                state,
-                skipPreviousActionClicked = ::navigateToMediaItemView,
-                skipNextActionClicked = ::navigateToMediaItemView,
-                moreActionsClicked = ::onDetailsClicked
-            )
-        }
+        setupViewModel()
     }
 
     override fun onDestroyView() {
         player.release()
         super.onDestroyView()
+    }
+
+    private fun setupViewModel() {
+        onState(viewModel.getMediaItemViewState(args.index))
+    }
+
+    private fun onState(state: MediaItemViewState) {
+        PlayerGlue(
+            this,
+            player,
+            mediaSourceFactory,
+            state,
+            skipPreviousActionClicked = ::navigateToMediaItemView,
+            skipNextActionClicked = ::navigateToMediaItemView,
+            moreActionsClicked = ::onDetailsClicked
+        )
     }
 
     private fun navigateToMediaItemView(item: MediaItemGridState.Item) {

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -54,7 +53,7 @@ class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragm
     }
 
     private fun setupViewModel() {
-        viewModel.getMediaItemViewState(args.index).observe(viewLifecycleOwner, ::onState)
+        onState(viewModel.getMediaItemViewState(args.index))
     }
 
     private fun onState(state: MediaItemViewState) {
