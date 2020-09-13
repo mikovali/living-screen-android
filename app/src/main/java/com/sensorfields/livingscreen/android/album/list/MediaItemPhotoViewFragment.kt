@@ -2,15 +2,18 @@ package com.sensorfields.livingscreen.android.album.list
 
 import android.graphics.Point
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isInvisible
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
+import androidx.leanback.app.PlaybackSupportFragment
+import androidx.leanback.app.PlaybackSupportFragmentGlueHost
+import androidx.leanback.media.PlayerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.databinding.MediaItemPhotoViewFragmentBinding
+import com.sensorfields.livingscreen.android.databinding.MediaItemPhotoBinding
 import com.sensorfields.livingscreen.android.producer
 import com.sensorfields.livingscreen.android.viewState
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @AndroidEntryPoint
-class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragment) {
+class MediaItemPhotoViewFragment : PlaybackSupportFragment() {
 
     private val args by navArgs<MediaItemViewFragmentArgs>()
 
@@ -29,16 +32,15 @@ class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragm
         producer { factory.get() }
     }
 
-    private val viewBinding by viewState({ MediaItemPhotoViewFragmentBinding.bind(it) })
-
-    private val size by lazy {
-        Point(
-            resources.displayMetrics.widthPixels,
-            resources.displayMetrics.heightPixels
-        )
-    }
-
-    private var state: MediaItemViewState? = null
+    private val viewBinding by viewState(
+        create = { view ->
+            with(view as ViewGroup) {
+                MediaItemPhotoBinding.inflate(LayoutInflater.from(context), this, false).apply {
+                    this@with.addView(root, 0)
+                }
+            }
+        }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,9 +49,7 @@ class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragm
     }
 
     private fun setupViews() {
-        viewBinding.previousButton.setOnClickListener { onPreviousButtonClicked() }
-        viewBinding.nextButton.setOnClickListener { onNextButtonClicked() }
-        viewBinding.detailsButton.setOnClickListener { onDetailsButtonClicked() }
+        hideControlsOverlay(false)
     }
 
     private fun setupViewModel() {
@@ -57,28 +57,46 @@ class MediaItemPhotoViewFragment : Fragment(R.layout.media_item_photo_view_fragm
     }
 
     private fun onState(state: MediaItemViewState) {
-        this.state = state
-        viewBinding.previousButton.isInvisible = state.previous == null
-        viewBinding.nextButton.isInvisible = state.next == null
-        viewBinding.imageView.contentDescription = state.current.fileName
-        Glide.with(viewBinding.imageView)
-            .load("${state.current.baseUrl}=w${size.x}-h${size.y}")
-            .into(viewBinding.imageView)
-    }
-
-    private fun onPreviousButtonClicked() {
-        state?.previous?.let { item -> navigateToMediaItemView(item) }
-    }
-
-    private fun onNextButtonClicked() {
-        state?.next?.let { item -> navigateToMediaItemView(item) }
+        PlaybackControlGlue(
+            requireContext(),
+            PhotoAdapter(viewBinding, state.current),
+            PlaybackSupportFragmentGlueHost(this),
+            state,
+            skipPreviousActionClicked = ::navigateToMediaItemView,
+            skipNextActionClicked = ::navigateToMediaItemView,
+            moreActionsClicked = ::onDetailsClicked
+        )
     }
 
     private fun navigateToMediaItemView(item: MediaItemGridState.Item) {
         findNavController().navigate(MediaItemViewFragmentDirections.mediaItemView(item.index))
     }
 
-    private fun onDetailsButtonClicked() {
-        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemDetails(args.index))
+    private fun onDetailsClicked(item: MediaItemGridState.Item) {
+        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemDetails(item.index))
+    }
+}
+
+private class PhotoAdapter(
+    private val viewBinding: MediaItemPhotoBinding,
+    private val item: MediaItemGridState.Item
+) : PlayerAdapter() {
+
+    private val size by lazy {
+        isPrepared
+        Point(
+            viewBinding.root.resources.displayMetrics.widthPixels,
+            viewBinding.root.resources.displayMetrics.heightPixels
+        )
+    }
+
+    override fun play() {
+        viewBinding.imageView.contentDescription = item.fileName
+        Glide.with(viewBinding.imageView)
+            .load("${item.baseUrl}=w${size.x}-h${size.y}")
+            .into(viewBinding.imageView)
+    }
+
+    override fun pause() {
     }
 }
