@@ -3,21 +3,21 @@ plugins {
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.4.0"
+    kotlin("plugin.serialization") version "1.4.10"
     id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.appdistribution")
-    id("io.gitlab.arturbosch.detekt") version "1.11.2"
+    id("io.gitlab.arturbosch.detekt") version "1.13.1"
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
     defaultConfig {
         applicationId = "com.sensorfields.livingscreen"
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0.0${property("appVersionNameSuffix")}"
         kapt {
@@ -76,24 +76,24 @@ dependencies {
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 
-    implementation("com.google.firebase:firebase-auth-ktx:19.3.2")
+    implementation("com.google.firebase:firebase-auth-ktx:19.4.0")
     implementation("com.google.firebase:firebase-crashlytics-ktx:17.2.1")
     implementation("com.google.firebase:firebase-analytics-ktx:17.5.0")
 
     implementation("com.google.android.gms:play-services-auth:18.1.0")
 
-    implementation("com.google.dagger:hilt-android:2.28.3-alpha")
-    kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")
+    implementation("com.google.dagger:hilt-android:2.29.1-alpha")
+    kapt("com.google.dagger:hilt-android-compiler:2.29.1-alpha")
 
-    implementation("io.arrow-kt:arrow-core-data:0.10.5")
+    implementation("io.arrow-kt:arrow-core-data:0.11.0")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:4.8.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.7.0")
 
     implementation("com.github.bumptech.glide:glide:4.11.0")
 
-    implementation("com.google.android.exoplayer:exoplayer-core:2.11.8")
-    implementation("com.google.android.exoplayer:extension-okhttp:2.11.8")
-    implementation("com.google.android.exoplayer:extension-leanback:2.11.8")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.12.0")
+    implementation("com.google.android.exoplayer:extension-okhttp:2.12.0")
+    implementation("com.google.android.exoplayer:extension-leanback:2.12.0")
 }
