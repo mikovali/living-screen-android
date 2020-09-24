@@ -3,7 +3,8 @@ package com.sensorfields.livingscreen.android.domain.data.remote
 import android.content.Context
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Tasks
 import com.sensorfields.livingscreen.android.HTTP_UNAUTHORIZED
 import com.sensorfields.livingscreen.android.domain.data.dto.AlbumDto
 import com.sensorfields.livingscreen.android.domain.data.dto.MediaItemDto
@@ -37,8 +38,8 @@ data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)
 data class SearchMediaItemsResponse(val mediaItems: List<MediaItemDto>)
 
 class GooglePhotosAuthenticator @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val googleSignInOptions: GoogleSignInOptions
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -53,7 +54,7 @@ class GooglePhotosAuthenticator @Inject constructor(
             if (newToken != null) {
                 val newResponse = chain.proceed(request.setAuthorizationHeader(newToken))
                 if (newResponse.code == HTTP_UNAUTHORIZED) {
-                    firebaseAuth.signOut()
+                    Tasks.await(GoogleSignIn.getClient(context, googleSignInOptions).signOut())
                 }
                 return newResponse
             }

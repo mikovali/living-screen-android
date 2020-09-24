@@ -2,8 +2,8 @@ package com.sensorfields.livingscreen.android
 
 import android.content.Context
 import androidx.room.Room
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
 import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
@@ -31,15 +31,15 @@ object ApplicationModule {
     @Provides
     fun json(): Json = Json { ignoreUnknownKeys = true }
 
-    @Singleton
+    @Reusable
     @Provides
-    fun firebaseApp(@ApplicationContext context: Context): FirebaseApp {
-        return FirebaseApp.initializeApp(context)!!
+    fun googleSignInOptions(@ApplicationContext context: Context): GoogleSignInOptions {
+        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .requestScopes(Scope("https://www.googleapis.com/auth/photoslibrary.readonly"))
+            .build()
     }
-
-    @Singleton
-    @Provides
-    fun firebaseAuth(firebaseApp: FirebaseApp): FirebaseAuth = FirebaseAuth(firebaseApp)
 }
 
 @Module

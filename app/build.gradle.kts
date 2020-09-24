@@ -76,7 +76,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 
-    implementation("com.google.firebase:firebase-auth-ktx:19.4.0")
     implementation("com.google.firebase:firebase-crashlytics-ktx:17.2.1")
     implementation("com.google.firebase:firebase-analytics-ktx:17.5.0")
 

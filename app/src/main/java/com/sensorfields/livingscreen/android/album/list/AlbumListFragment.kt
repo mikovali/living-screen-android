@@ -9,7 +9,6 @@ import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRowPresenter
 import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.sensorfields.livingscreen.android.R
