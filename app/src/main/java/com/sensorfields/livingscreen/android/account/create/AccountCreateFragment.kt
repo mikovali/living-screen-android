@@ -1,66 +1,69 @@
 package com.sensorfields.livingscreen.android.account.create
 
 import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import androidx.leanback.app.GuidedStepSupportFragment
+import androidx.leanback.widget.GuidanceStylist
+import androidx.leanback.widget.GuidedAction
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.Scope
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.SignInWithGoogle
-import com.sensorfields.livingscreen.android.databinding.AccountCreateFragmentBinding
 import com.sensorfields.livingscreen.android.producer
-import com.sensorfields.livingscreen.android.viewState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Provider
 
 @AndroidEntryPoint
-class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
+class AccountCreateFragment : GuidedStepSupportFragment() {
 
     @Inject
     lateinit var factory: Provider<AccountCreateViewModel>
 
     private val viewModel by viewModels<AccountCreateViewModel> { producer { factory.get() } }
 
-    private val viewBinding by viewState({ AccountCreateFragmentBinding.bind(it) })
+    private val signInWithGoogle = registerForActivityResult(
+        SignInWithGoogle(),
+        ::onGoogleSignInCompleted
+    )
 
-    private val signInWithGoogle =
-        registerForActivityResult(SignInWithGoogle()) { account: GoogleSignInAccount? ->
-            account?.idToken?.let { idToken -> viewModel.signInWithGoogle(idToken) }
-        }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews()
-        viewModel.state.observe(viewLifecycleOwner, ::onState)
-        viewModel.action.observe(viewLifecycleOwner, ::onAction)
+    override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance {
+        return GuidanceStylist.Guidance(
+            getString(R.string.application_name),
+            getString(R.string.account_create_description),
+            null,
+            ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher, null)
+        )
     }
 
-    private fun setupViews() {
-        viewBinding.googleSignInButton.setOnClickListener {
-            signInWithGoogle.launch(
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .requestScopes(Scope("https://www.googleapis.com/auth/photoslibrary.readonly"))
-                    .build()
-            )
+    override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
+        actions.add(
+            GuidedAction.Builder(requireContext())
+                .id(GOOGLE_SIGN_IN)
+                .title(R.string.common_signin_button_text_long)
+                .icon(R.drawable.common_google_signin_btn_icon_dark)
+                .build()
+        )
+    }
+
+    override fun onGuidedActionClicked(action: GuidedAction) {
+        when (action.id) {
+            GOOGLE_SIGN_IN -> onGoogleSignInButtonClicked()
         }
     }
 
-    private fun onState(state: AccountCreateState) {
-        viewBinding.googleSignInButton.isEnabled = !state.isInProgress
+    private fun onGoogleSignInButtonClicked() {
+        signInWithGoogle.launch(viewModel.googleSignInOptions)
     }
 
-    private fun onAction(action: AccountCreateAction) {
-        when (action) {
-            is AccountCreateAction.NavigateToMain -> {
-                findNavController().navigate(AccountCreateFragmentDirections.main())
-            }
-        }
+    private fun onGoogleSignInCompleted(account: GoogleSignInAccount?) {
+        if (account != null) navigateToMain()
+    }
+
+    private fun navigateToMain() {
+        findNavController().navigate(AccountCreateFragmentDirections.main())
     }
 }
+
+private const val GOOGLE_SIGN_IN = 1L

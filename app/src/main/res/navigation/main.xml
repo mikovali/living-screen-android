@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainGraph"
     app:startDestination="@id/albumListFragment">
 
@@ -56,7 +55,6 @@
 
     <fragment
         android:id="@+id/accountCreateFragment"
-        android:name="com.sensorfields.livingscreen.android.account.create.AccountCreateFragment"
-        tools:layout="@layout/account_create_fragment" />
+        android:name="com.sensorfields.livingscreen.android.account.create.AccountCreateFragment" />
 
 </navigation>

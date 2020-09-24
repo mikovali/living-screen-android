@@ -7,7 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.usecase.ObserveAccountUseCase
+import com.sensorfields.livingscreen.android.domain.usecase.IsGoogleAccountConnectedUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveAlbumsUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveMediaItemsUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.RefreshAlbumsUseCase
@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlbumListViewModel @Inject constructor(
-    private val observeAccountUseCase: ObserveAccountUseCase,
+    private val isGoogleAccountConnectedUseCase: IsGoogleAccountConnectedUseCase,
     private val observeAlbumsUseCase: ObserveAlbumsUseCase,
     private val refreshAlbumsUseCase: RefreshAlbumsUseCase,
     observeMediaItemsUseCase: ObserveMediaItemsUseCase
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<AlbumListState>(AlbumListState())
+    private val _state = MutableLiveData(AlbumListState())
     val state: LiveData<AlbumListState> = _state
 
     private val _action = ActionLiveData<AlbumListAction>()
@@ -47,7 +47,7 @@ class AlbumListViewModel @Inject constructor(
         .asLiveData(viewModelScope.coroutineContext)
 
     init {
-        observeAccount()
+        isGoogleAccountConnected()
         observeAlbums()
         refreshAlbums()
     }
@@ -61,12 +61,10 @@ class AlbumListViewModel @Inject constructor(
         )
     }
 
-    private fun observeAccount() {
-        observeAccountUseCase()
-            .onEach { account ->
-                if (account == null) _action.postValue(AlbumListAction.NavigateToAccountCreate)
-            }
-            .launchIn(viewModelScope)
+    private fun isGoogleAccountConnected() {
+        if (!isGoogleAccountConnectedUseCase()) {
+            _action.postValue(AlbumListAction.NavigateToAccountCreate)
+        }
     }
 
     private fun observeAlbums() {

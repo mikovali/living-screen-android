@@ -8,10 +8,6 @@
     <string name="album_list_shared_albums">Shared Albums</string>
     <string name="album_list_album_title_blank">Shared album</string>
 
-    <string name="media_item_view_previous">Previous</string>
-    <string name="media_item_view_next">Next</string>
-    <string name="media_item_view_details">Details</string>
-
-    <string name="account_create_title">Login</string>
+    <string name="account_create_description">Sign in to continue</string>
 
 </resources>

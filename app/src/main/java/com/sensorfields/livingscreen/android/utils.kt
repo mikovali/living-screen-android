@@ -15,10 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.Task
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -42,7 +38,7 @@ class ActionLiveData<T> : MutableLiveData<T>() {
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
-        super.observe(owner, Observer<T> { value -> if (value != null) observer.onChanged(value) })
+        super.observe(owner) { value -> if (value != null) observer.onChanged(value) }
     }
 }
 
@@ -59,11 +55,6 @@ class SignInWithGoogle : ActivityResultContract<GoogleSignInOptions, GoogleSignI
             null
         }
     }
-}
-
-suspend fun <T> Task<T>.await(): T = suspendCoroutine { continuation ->
-    addOnSuccessListener { result -> continuation.resume(result) }
-    addOnFailureListener { e -> continuation.resumeWithException(e) }
 }
 
 fun <T> viewState(
