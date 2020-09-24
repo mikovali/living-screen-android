@@ -23,10 +23,6 @@
             android:id="@+id/mediaItemView"
             app:destination="@id/mediaItemViewFragment" />
 
-        <action
-            android:id="@+id/mediaItemImageView"
-            app:destination="@id/mediaItemImageViewFragment" />
-
     </fragment>
 
     <fragment
@@ -34,22 +30,13 @@
         android:name="com.sensorfields.livingscreen.android.album.list.MediaItemViewFragment">
 
         <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:name="index"
+            app:argType="integer" />
 
         <action
-            android:id="@+id/mediaItemDetails"
-            app:destination="@id/mediaItemDetailsFragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/mediaItemImageViewFragment"
-        android:name="com.sensorfields.livingscreen.android.album.list.MediaItemImageViewFragment">
-
-        <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:id="@+id/mediaItemView"
+            app:destination="@id/mediaItemViewFragment"
+            app:popUpTo="@id/albumListFragment" />
 
         <action
             android:id="@+id/mediaItemDetails"
@@ -62,8 +49,8 @@
         android:name="com.sensorfields.livingscreen.android.album.list.MediaItemDetailsFragment">
 
         <argument
-            android:name="mediaItem"
-            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+            android:name="index"
+            app:argType="integer" />
 
     </fragment>
 

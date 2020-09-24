@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.leanback.app.DetailsSupportFragment
 import androidx.leanback.widget.AbstractDetailsDescriptionPresenter
 import androidx.leanback.widget.Action
@@ -13,46 +14,80 @@ import androidx.leanback.widget.DetailsOverviewLogoPresenter
 import androidx.leanback.widget.DetailsOverviewRow
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Provider
 
 @AndroidEntryPoint
 class MediaItemDetailsFragment : DetailsSupportFragment() {
 
     private val args by navArgs<MediaItemDetailsFragmentArgs>()
 
+    @Inject
+    lateinit var factory: Provider<AlbumListViewModel>
+
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
+        producer { factory.get() }
+    }
+
+    private val detailsAdapter = ArrayObjectAdapter(
+        FullWidthDetailsOverviewRowPresenter(Presenter(), LogoPresenter())
+    )
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = ArrayObjectAdapter(
-            FullWidthDetailsOverviewRowPresenter(Presenter(), LogoPresenter())
-        ).apply {
-            add(DetailsOverviewRow(args.mediaItem).apply {
-                with(actionsAdapter as ArrayObjectAdapter) {
-                    add(Action(ID1, "Do something yo"))
-                    add(
-                        Action(
-                            ID2,
-                            "Do something else yo",
-                            "With yo this",
-                            requireContext().getDrawable(R.drawable.ic_baseline_broken_image_24)
+        setupViews()
+        setupViewModel()
+    }
+
+    private fun setupViews() {
+        adapter = detailsAdapter
+    }
+
+    private fun setupViewModel() {
+        onState(viewModel.getMediaItemViewState(args.index))
+    }
+
+    private fun onState(state: MediaItemViewState) {
+        detailsAdapter.setItems(
+            listOf(
+                DetailsOverviewRow(state.current).apply {
+                    with(actionsAdapter as ArrayObjectAdapter) {
+                        add(Action(ID1, "Do something yo"))
+                        add(
+                            Action(
+                                ID2,
+                                "Do something else yo",
+                                "With yo this",
+                                ContextCompat.getDrawable(
+                                    requireContext(),
+                                    R.drawable.ic_baseline_broken_image_24
+                                )
+                            )
                         )
-                    )
-                    add(Action(ID3, "Do something yo completely different").apply {
-                        icon = requireContext().getDrawable(R.drawable.ic_baseline_photo_24)
-                    })
+                        add(Action(ID3, "Do something yo completely different").apply {
+                            icon = ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_baseline_photo_24
+                            )
+                        })
+                    }
                 }
-            })
-        }
+            ),
+            null
+        )
     }
 }
 
 private class Presenter : AbstractDetailsDescriptionPresenter() {
 
     override fun onBindDescription(vh: ViewHolder, item: Any) {
-        val mediaItem = item as MediaItem
+        val mediaItem = item as MediaItemGridState.Item
         vh.title.text = mediaItem.fileName
         vh.subtitle.text = "Subtitle yo yo"
         vh.body.text = "Text body yo\nYo YO Yo\nSsasdasd"
@@ -65,7 +100,7 @@ private class LogoPresenter : DetailsOverviewLogoPresenter() {
         viewHolder: androidx.leanback.widget.Presenter.ViewHolder,
         item: Any
     ) {
-        val mediaItem = (item as DetailsOverviewRow).item as MediaItem
+        val mediaItem = (item as DetailsOverviewRow).item as MediaItemGridState.Item
         val vh = viewHolder as ViewHolder
         val imageView = vh.view as ImageView
         Glide.with(imageView)

@@ -2,7 +2,11 @@ package com.sensorfields.livingscreen.android
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -15,6 +19,8 @@ import com.google.android.gms.tasks.Task
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 inline fun producer(crossinline producer: () -> ViewModel) = object : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -58,4 +64,32 @@ class SignInWithGoogle : ActivityResultContract<GoogleSignInOptions, GoogleSignI
 suspend fun <T> Task<T>.await(): T = suspendCoroutine { continuation ->
     addOnSuccessListener { result -> continuation.resume(result) }
     addOnFailureListener { e -> continuation.resumeWithException(e) }
+}
+
+fun <T> viewState(
+    create: (View) -> T,
+    destroy: (T.() -> Unit)? = null
+): ReadOnlyProperty<Fragment, T> = FragmentOnViewCreatedDelegate(create, destroy)
+
+private class FragmentOnViewCreatedDelegate<T>(
+    private val create: (View) -> T,
+    private val destroy: (T.() -> Unit)? = null
+) : ReadOnlyProperty<Fragment, T> {
+
+    private var value: T? = null
+
+    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
+        return value ?: run {
+            thisRef.viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    if (event == Lifecycle.Event.ON_DESTROY) {
+                        value?.let { currentValue -> destroy?.invoke(currentValue) }
+                        value = null
+                        thisRef.viewLifecycleOwner.lifecycle.removeObserver(this)
+                    }
+                }
+            })
+            create(thisRef.requireView()).also { value = it }
+        }
+    }
 }

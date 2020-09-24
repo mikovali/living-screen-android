@@ -13,6 +13,7 @@ import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.SignInWithGoogle
 import com.sensorfields.livingscreen.android.databinding.AccountCreateFragmentBinding
 import com.sensorfields.livingscreen.android.producer
+import com.sensorfields.livingscreen.android.viewState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Provider
@@ -25,7 +26,7 @@ class AccountCreateFragment : Fragment(R.layout.account_create_fragment) {
 
     private val viewModel by viewModels<AccountCreateViewModel> { producer { factory.get() } }
 
-    private val viewBinding by lazy { AccountCreateFragmentBinding.bind(requireView()) }
+    private val viewBinding by viewState({ AccountCreateFragmentBinding.bind(it) })
 
     private val signInWithGoogle =
         registerForActivityResult(SignInWithGoogle()) { account: GoogleSignInAccount? ->

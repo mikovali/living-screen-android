@@ -2,7 +2,6 @@ package com.sensorfields.livingscreen.android.album.list
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.DividerRow
@@ -12,20 +11,22 @@ import androidx.leanback.widget.PageRow
 import androidx.leanback.widget.SectionRow
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Provider
 
-// TODO rename to AlbumBrowseFragment?
 @AndroidEntryPoint
 class AlbumListFragment : BrowseSupportFragment() {
 
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel> { producer { factory.get() } }
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
+        producer { factory.get() }
+    }
 
     private val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
     private val mediaItemGridFragmentFactory = object : FragmentFactory<MediaItemGridFragment>() {

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -15,9 +14,9 @@ import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class MediaItemGridFragment :
     @Inject
     lateinit var factory: Provider<AlbumListViewModel>
 
-    private val viewModel by viewModels<AlbumListViewModel>({ requireParentFragment() }) {
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
         producer { factory.get() }
     }
 
@@ -46,7 +45,7 @@ class MediaItemGridFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        viewModel.observeMediaItems(null).observe(viewLifecycleOwner, ::onMediaItems)
+        setupViewModel()
     }
 
     override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> {
@@ -56,18 +55,17 @@ class MediaItemGridFragment :
     private fun setupViews() {
         adapter = mediaItemsAdapter
         setOnItemViewClickedListener { _, item, _, _ ->
-            with(item as MediaItem) {
-                val directions = when (type) {
-                    MediaItem.Type.Photo -> AlbumListFragmentDirections.mediaItemImageView(this)
-                    MediaItem.Type.Video -> AlbumListFragmentDirections.mediaItemView(this)
-                }
-                findNavController().navigate(directions)
-            }
+            item as MediaItemGridState.Item
+            findNavController().navigate(AlbumListFragmentDirections.mediaItemView(item.index))
         }
     }
 
-    private fun onMediaItems(mediaItems: List<MediaItem>) {
-        mediaItemsAdapter.setItems(mediaItems, null)
+    private fun setupViewModel() {
+        viewModel.mediaItemGridState.observe(viewLifecycleOwner, ::onState)
+    }
+
+    private fun onState(state: MediaItemGridState) {
+        mediaItemsAdapter.setItems(state.items, null)
     }
 }
 
@@ -99,7 +97,7 @@ private class MediaItemPresenter : Presenter() {
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-        val mediaItem = item as MediaItem
+        val mediaItem = item as MediaItemGridState.Item
         with((viewHolder.view as ImageCardView)) {
             Glide.with(this)
                 .load("${mediaItem.baseUrl}=w${mainImageSize.x}-h${mainImageSize.y}-c")

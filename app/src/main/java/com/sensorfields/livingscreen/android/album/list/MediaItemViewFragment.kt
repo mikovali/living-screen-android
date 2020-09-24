@@ -2,85 +2,46 @@ package com.sensorfields.livingscreen.android.album.list
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.net.toUri
-import androidx.leanback.app.VideoSupportFragment
-import androidx.leanback.app.VideoSupportFragmentGlueHost
-import androidx.leanback.media.PlaybackTransportControlGlue
-import androidx.leanback.widget.Action
-import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.PlaybackControlsRow
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.source.MediaSourceFactory
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import androidx.navigation.navGraphViewModels
+import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.domain.MediaItem
-import okhttp3.OkHttpClient
+import com.sensorfields.livingscreen.android.producer
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Provider
 
-class MediaItemViewFragment : VideoSupportFragment() {
+@AndroidEntryPoint
+class MediaItemViewFragment : Fragment(R.layout.media_item_view_fragment) {
 
     private val args by navArgs<MediaItemViewFragmentArgs>()
 
-    private lateinit var player: SimpleExoPlayer
+    @Inject
+    lateinit var factory: Provider<AlbumListViewModel>
+
+    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
+        producer { factory.get() }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val mediaSourceFactory = ProgressiveMediaSource.Factory(
-            OkHttpDataSourceFactory(OkHttpClient(), null)
-        )
-        player = SimpleExoPlayer.Builder(requireContext()).build()
-
-        PlayerGlue(this, player, mediaSourceFactory, args.mediaItem) {
-            findNavController().navigate(
-                MediaItemViewFragmentDirections.mediaItemDetails(args.mediaItem)
-            )
-        }
+        setupViewModel()
     }
 
-    override fun onDestroyView() {
-        player.release()
-        super.onDestroyView()
+    private fun setupViewModel() {
+        onState(viewModel.getMediaItemViewState(args.index))
+    }
+
+    private fun onState(state: MediaItemViewState) {
+        val fragment = when (state.current.type) {
+            MediaItem.Type.Photo -> MediaItemPhotoViewFragment()
+            MediaItem.Type.Video -> MediaItemVideoViewFragment()
+        }.apply {
+            arguments = args.toBundle()
+        }
+        childFragmentManager.beginTransaction()
+            .replace(R.id.containerView, fragment)
+            .commit()
     }
 }
-
-private class PlayerGlue(
-    fragment: VideoSupportFragment,
-    player: SimpleExoPlayer,
-    mediaSourceFactory: MediaSourceFactory,
-    mediaItem: MediaItem,
-    private val moreActionsClicked: () -> Unit
-) : PlaybackTransportControlGlue<LeanbackPlayerAdapter>(
-    fragment.requireContext(),
-    LeanbackPlayerAdapter(fragment.requireContext(), player, UPDATE_PERIODS_MS)
-) {
-    private val moreActions = PlaybackControlsRow.MoreActions(context)
-
-    init {
-        host = VideoSupportFragmentGlueHost(fragment)
-        title = mediaItem.fileName
-        isSeekEnabled = true
-        playerAdapter.setPlaybackPreparer {
-            player.prepare(
-                mediaSourceFactory.createMediaSource("${mediaItem.baseUrl}=dv".toUri())
-            )
-        }
-        play()
-    }
-
-    override fun onCreatePrimaryActions(primaryActionsAdapter: ArrayObjectAdapter) {
-        super.onCreatePrimaryActions(primaryActionsAdapter)
-        primaryActionsAdapter.add(moreActions)
-    }
-
-    override fun onActionClicked(action: Action?) {
-        when (action) {
-            moreActions -> moreActionsClicked()
-            else -> super.onActionClicked(action)
-        }
-    }
-}
-
-private const val UPDATE_PERIODS_MS = 300
