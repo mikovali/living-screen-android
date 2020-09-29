@@ -36,7 +36,7 @@ class MediaItemViewFragment : Fragment(R.layout.media_item_view_fragment) {
     }
 
     private fun onState(state: MediaItemViewState) {
-        val fragment = when (state.current.type) {
+        val fragment = when (state.type) {
             MediaItem.Type.Photo -> MediaItemPhotoViewFragment()
             MediaItem.Type.Video -> MediaItemVideoViewFragment()
         }.apply {

@@ -85,9 +85,9 @@ class MediaItemPhotoViewFragment : PlaybackSupportFragment() {
     }
 
     private fun onState(state: MediaItemViewState) {
-        viewBinding.imageView.contentDescription = state.current.fileName
+        viewBinding.imageView.contentDescription = state.fileName
         Glide.with(viewBinding.imageView)
-            .load("${state.current.baseUrl}=w${size.x}-h${size.y}")
+            .load("${state.baseUrl}=w${size.x}-h${size.y}")
             .into(viewBinding.imageView)
         setPlaybackRow(PlaybackControlsRow(state))
     }
@@ -128,8 +128,8 @@ private class PhotoRowPresenter(
         val viewHolder = vh as ViewHolder
         val state = (viewHolder.row as PlaybackControlsRow).item as MediaItemViewState
 
-        viewHolder.viewBinding.lbControlSkipPrevious.isVisible = state.previous != null
-        viewHolder.viewBinding.lbControlSkipNext.isVisible = state.next != null
+        viewHolder.viewBinding.lbControlSkipPrevious.isVisible = state.isPreviousVisible
+        viewHolder.viewBinding.lbControlSkipNext.isVisible = state.isNextVisible
 
         viewHolder.viewBinding.lbControlSkipPrevious.setOnClickListener {
             skipPreviousActionClicked()

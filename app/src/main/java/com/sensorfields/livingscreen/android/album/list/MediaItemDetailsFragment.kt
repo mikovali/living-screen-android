@@ -56,7 +56,7 @@ class MediaItemDetailsFragment : DetailsSupportFragment() {
     private fun onState(state: MediaItemViewState) {
         detailsAdapter.setItems(
             listOf(
-                DetailsOverviewRow(state.current).apply {
+                DetailsOverviewRow(state).apply {
                     with(actionsAdapter as ArrayObjectAdapter) {
                         add(Action(ID1, "Do something yo"))
                         add(
@@ -87,8 +87,8 @@ class MediaItemDetailsFragment : DetailsSupportFragment() {
 private class Presenter : AbstractDetailsDescriptionPresenter() {
 
     override fun onBindDescription(vh: ViewHolder, item: Any) {
-        val mediaItem = item as MediaItemGridState.Item
-        vh.title.text = mediaItem.fileName
+        val state = item as MediaItemViewState
+        vh.title.text = state.fileName
         vh.subtitle.text = "Subtitle yo yo"
         vh.body.text = "Text body yo\nYo YO Yo\nSsasdasd"
     }
@@ -100,11 +100,11 @@ private class LogoPresenter : DetailsOverviewLogoPresenter() {
         viewHolder: androidx.leanback.widget.Presenter.ViewHolder,
         item: Any
     ) {
-        val mediaItem = (item as DetailsOverviewRow).item as MediaItemGridState.Item
+        val state = (item as DetailsOverviewRow).item as MediaItemViewState
         val vh = viewHolder as ViewHolder
         val imageView = vh.view as ImageView
         Glide.with(imageView)
-            .load("${mediaItem.baseUrl}=w${imageView.maxWidth}-h${imageView.maxHeight}")
+            .load("${state.baseUrl}=w${imageView.maxWidth}-h${imageView.maxHeight}")
             .into(object : DrawableImageViewTarget(imageView) {
                 override fun setResource(resource: Drawable?) {
                     super.setResource(resource)
