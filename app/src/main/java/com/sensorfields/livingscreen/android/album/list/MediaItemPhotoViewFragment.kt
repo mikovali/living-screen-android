@@ -2,6 +2,7 @@ package com.sensorfields.livingscreen.android.album.list
 
 import android.graphics.Point
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,6 @@ import androidx.leanback.app.PlaybackSupportFragment
 import androidx.leanback.widget.PlaybackControlsRow
 import androidx.leanback.widget.PlaybackRowPresenter
 import androidx.leanback.widget.RowPresenter
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
@@ -54,11 +54,27 @@ class MediaItemPhotoViewFragment : PlaybackSupportFragment() {
     }
 
     private fun setupViews() {
+        setOnKeyInterceptListener { _, keyCode, event ->
+            if (!isControlsOverlayVisible &&
+                keyCode in arrayOf(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT)
+            ) {
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    onPreviousClicked()
+                } else if (event.action == KeyEvent.ACTION_DOWN &&
+                    keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                ) {
+                    onNextClicked()
+                }
+                true
+            } else {
+                false
+            }
+        }
         hideControlsOverlay(false)
         setPlaybackRowPresenter(
             PhotoRowPresenter(
-                skipPreviousActionClicked = ::navigateToMediaItemView,
-                skipNextActionClicked = ::navigateToMediaItemView,
+                skipPreviousActionClicked = ::onPreviousClicked,
+                skipNextActionClicked = ::onNextClicked,
                 moreActionsClicked = ::onDetailsClicked
             )
         )
@@ -76,19 +92,23 @@ class MediaItemPhotoViewFragment : PlaybackSupportFragment() {
         setPlaybackRow(PlaybackControlsRow(state))
     }
 
-    private fun navigateToMediaItemView(item: MediaItemGridState.Item) {
-        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemView(item.index))
+    private fun onDetailsClicked() {
+        viewModel.onDetailsClicked(args.index)
     }
 
-    private fun onDetailsClicked(item: MediaItemGridState.Item) {
-        findNavController().navigate(MediaItemViewFragmentDirections.mediaItemDetails(item.index))
+    private fun onPreviousClicked() {
+        viewModel.onPreviousClicked(args.index)
+    }
+
+    private fun onNextClicked() {
+        viewModel.onNextClicked(args.index)
     }
 }
 
 private class PhotoRowPresenter(
-    private val skipPreviousActionClicked: (MediaItemGridState.Item) -> Unit,
-    private val skipNextActionClicked: (MediaItemGridState.Item) -> Unit,
-    private val moreActionsClicked: (MediaItemGridState.Item) -> Unit
+    private val skipPreviousActionClicked: () -> Unit,
+    private val skipNextActionClicked: () -> Unit,
+    private val moreActionsClicked: () -> Unit
 ) : PlaybackRowPresenter() {
 
     init {
@@ -112,14 +132,10 @@ private class PhotoRowPresenter(
         viewHolder.viewBinding.lbControlSkipNext.isVisible = state.next != null
 
         viewHolder.viewBinding.lbControlSkipPrevious.setOnClickListener {
-            state.previous?.let { skipPreviousActionClicked(it) }
+            skipPreviousActionClicked()
         }
-        viewHolder.viewBinding.lbControlSkipNext.setOnClickListener {
-            state.next?.let { skipNextActionClicked(it) }
-        }
-        viewHolder.viewBinding.lbControlMoreActions.setOnClickListener {
-            moreActionsClicked(state.current)
-        }
+        viewHolder.viewBinding.lbControlSkipNext.setOnClickListener { skipNextActionClicked() }
+        viewHolder.viewBinding.lbControlMoreActions.setOnClickListener { moreActionsClicked() }
     }
 
     class ViewHolder(

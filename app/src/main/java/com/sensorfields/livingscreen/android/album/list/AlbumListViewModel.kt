@@ -61,6 +61,24 @@ class AlbumListViewModel @Inject constructor(
         )
     }
 
+    fun onDetailsClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemDetails(it.index))
+        }
+    }
+
+    fun onPreviousClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index - 1)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+        }
+    }
+
+    fun onNextClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index + 1)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+        }
+    }
+
     private fun isGoogleAccountConnected() {
         if (!isGoogleAccountConnectedUseCase()) {
             _action.postValue(AlbumListAction.NavigateToAccountCreate)
