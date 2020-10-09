@@ -9,7 +9,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.appdistribution")
-    id("io.gitlab.arturbosch.detekt") version "1.13.1"
+    id("io.gitlab.arturbosch.detekt") version "1.14.1"
 }
 
 android {
@@ -47,8 +47,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
-            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"
+            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
     }
     compileOptions {
@@ -69,14 +68,14 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.0-alpha08")
+    implementation("androidx.fragment:fragment-ktx:1.3.0-beta01")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.1")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 
-    implementation("com.google.firebase:firebase-crashlytics-ktx:17.2.1")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:17.2.2")
     implementation("com.google.firebase:firebase-analytics-ktx:17.5.0")
 
     implementation("com.google.android.gms:play-services-auth:18.1.0")
