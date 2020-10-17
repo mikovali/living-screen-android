@@ -20,7 +20,9 @@ data class MediaItemGridState(
 }
 
 data class MediaItemViewState(
-    val current: MediaItemGridState.Item,
-    val previous: MediaItemGridState.Item?,
-    val next: MediaItemGridState.Item?
+    val type: MediaItem.Type,
+    val baseUrl: String,
+    val fileName: String,
+    val isPreviousVisible: Boolean,
+    val isNextVisible: Boolean
 )

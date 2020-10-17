@@ -12,7 +12,6 @@ import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide

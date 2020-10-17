@@ -53,12 +53,33 @@ class AlbumListViewModel @Inject constructor(
     }
 
     fun getMediaItemViewState(index: Int): MediaItemViewState {
-        val state = mediaItemGridState.value!!
+        val items = mediaItemGridState.value!!.items
+        val item = items[index]
         return MediaItemViewState(
-            current = state.items[index],
-            previous = state.items.getOrNull(index - 1),
-            next = state.items.getOrNull(index + 1)
+            type = item.type,
+            baseUrl = item.baseUrl,
+            fileName = item.fileName,
+            isPreviousVisible = index > 0,
+            isNextVisible = index < items.size
         )
+    }
+
+    fun onDetailsClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemDetails(it.index))
+        }
+    }
+
+    fun onPreviousClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index - 1)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+        }
+    }
+
+    fun onNextClicked(index: Int) {
+        mediaItemGridState.value?.items?.getOrNull(index + 1)?.let {
+            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+        }
     }
 
     private fun isGoogleAccountConnected() {
