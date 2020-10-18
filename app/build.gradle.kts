@@ -73,6 +73,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.2")
     implementation("androidx.leanback:leanback:1.0.0")
+    implementation("androidx.leanback:leanback-paging:1.1.0-alpha05")
+    implementation("androidx.paging:paging-common-ktx:3.0.0-alpha07")
+    implementation("androidx.paging:paging-runtime-ktx:3.0.0-alpha07")
     implementation("androidx.room:room-ktx:2.2.5")
     kapt("androidx.room:room-compiler:2.2.5")
 

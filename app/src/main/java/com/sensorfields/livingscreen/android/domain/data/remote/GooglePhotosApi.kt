@@ -14,6 +14,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 import javax.inject.Inject
 
 interface GooglePhotosApi {
@@ -25,7 +26,10 @@ interface GooglePhotosApi {
     suspend fun getSharedAlbums(): GetSharedAlbumsResponse
 
     @GET("mediaItems")
-    suspend fun searchMediaItems(): SearchMediaItemsResponse
+    suspend fun searchMediaItems(
+        @Query("pageSize") pageSize: Int,
+        @Query("pageToken") pageToken: String?
+    ): SearchMediaItemsResponse
 }
 
 @Serializable
@@ -35,7 +39,10 @@ data class GetAlbumsResponse(val albums: List<AlbumDto>)
 data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)
 
 @Serializable
-data class SearchMediaItemsResponse(val mediaItems: List<MediaItemDto>)
+data class SearchMediaItemsResponse(
+    val mediaItems: List<MediaItemDto>,
+    val nextPageToken: String? = null
+)
 
 class GooglePhotosAuthenticator @Inject constructor(
     @ApplicationContext private val context: Context,

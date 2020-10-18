@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainGraph"
-    app:startDestination="@id/albumListFragment">
+    app:startDestination="@id/mediaItemListFragment">
 
     <action
         android:id="@+id/main"
@@ -13,6 +13,10 @@
         android:id="@+id/accountCreate"
         app:destination="@id/accountCreateFragment"
         app:popUpTo="@id/mainGraph" />
+
+    <fragment
+        android:id="@+id/mediaItemListFragment"
+        android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemListFragment" />
 
     <fragment
         android:id="@+id/albumListFragment"

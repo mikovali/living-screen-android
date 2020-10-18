@@ -3,10 +3,12 @@ package com.sensorfields.livingscreen.android.album.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
 import arrow.core.Either
 import com.sensorfields.livingscreen.android.ActionLiveData
+import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.usecase.IsGoogleAccountConnectedUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveAlbumsUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveMediaItemsUseCase
@@ -22,7 +24,7 @@ class AlbumListViewModel @Inject constructor(
     private val isGoogleAccountConnectedUseCase: IsGoogleAccountConnectedUseCase,
     private val observeAlbumsUseCase: ObserveAlbumsUseCase,
     private val refreshAlbumsUseCase: RefreshAlbumsUseCase,
-    observeMediaItemsUseCase: ObserveMediaItemsUseCase
+    private val observeMediaItemsUseCase: ObserveMediaItemsUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData(AlbumListState())
@@ -31,29 +33,48 @@ class AlbumListViewModel @Inject constructor(
     private val _action = ActionLiveData<AlbumListAction>()
     val action: LiveData<AlbumListAction> = _action
 
-    val mediaItemGridState: LiveData<MediaItemGridState> = observeMediaItemsUseCase(null)
-        .map { mediaItems ->
-            MediaItemGridState(
-                items = mediaItems.mapIndexed { index, mediaItem ->
-                    MediaItemGridState.Item(
-                        index = index,
-                        type = mediaItem.type,
-                        baseUrl = mediaItem.baseUrl,
-                        fileName = mediaItem.fileName
-                    )
-                }
-            )
+    val mediaItemsData = observeMediaItemsUseCase()
+        .map {
+            it.map { mediaItem ->
+                MediaItemGridState.Item(
+                    id = mediaItem.id,
+                    index = 0,
+                    type = mediaItem.type,
+                    baseUrl = mediaItem.baseUrl,
+                    fileName = mediaItem.fileName
+                )
+            }
+
+
         }
-        .asLiveData(viewModelScope.coroutineContext)
+        .cachedIn(viewModelScope)
+
+//    private val _mediaItemGridState = MutableLiveData(MediaItemGridState())
+//    val mediaItemGridState: LiveData<MediaItemGridState> = _mediaItemGridState
+
+//    val mediaItemGridState: LiveData<MediaItemGridState> = observeMediaItemsUseCase(null)
+//        .map { mediaItems ->
+//            MediaItemGridState(
+//                items = mediaItems.mapIndexed { index, mediaItem ->
+//                    MediaItemGridState.Item(
+//                        index = index,
+//                        type = mediaItem.type,
+//                        baseUrl = mediaItem.baseUrl,
+//                        fileName = mediaItem.fileName
+//                    )
+//                }
+//            )
+//        }
+//        .asLiveData(viewModelScope.coroutineContext)
 
     init {
         isGoogleAccountConnected()
-        observeAlbums()
-        refreshAlbums()
+//        observeAlbums()
+//        refreshAlbums()
     }
 
     fun getMediaItemViewState(index: Int): MediaItemViewState {
-        val items = mediaItemGridState.value!!.items
+        val items = listOf<MediaItem>()
         val item = items[index]
         return MediaItemViewState(
             type = item.type,
@@ -65,21 +86,21 @@ class AlbumListViewModel @Inject constructor(
     }
 
     fun onDetailsClicked(index: Int) {
-        mediaItemGridState.value?.items?.getOrNull(index)?.let {
-            _action.postValue(AlbumListAction.NavigateToMediaItemDetails(it.index))
-        }
+//        mediaItemGridState.value?.items?.getOrNull(index)?.let {
+//            _action.postValue(AlbumListAction.NavigateToMediaItemDetails(it.index))
+//        }
     }
 
     fun onPreviousClicked(index: Int) {
-        mediaItemGridState.value?.items?.getOrNull(index - 1)?.let {
-            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
-        }
+//        mediaItemGridState.value?.items?.getOrNull(index - 1)?.let {
+//            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+//        }
     }
 
     fun onNextClicked(index: Int) {
-        mediaItemGridState.value?.items?.getOrNull(index + 1)?.let {
-            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
-        }
+//        mediaItemGridState.value?.items?.getOrNull(index + 1)?.let {
+//            _action.postValue(AlbumListAction.NavigateToMediaItemView(it.index))
+//        }
     }
 
     private fun isGoogleAccountConnected() {

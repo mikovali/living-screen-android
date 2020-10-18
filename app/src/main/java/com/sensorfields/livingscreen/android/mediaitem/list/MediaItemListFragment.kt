@@ -1,39 +1,39 @@
-package com.sensorfields.livingscreen.android.album.list
+package com.sensorfields.livingscreen.android.mediaitem.list
 
 import android.graphics.Point
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.leanback.app.BrowseSupportFragment
+import androidx.fragment.app.viewModels
 import androidx.leanback.app.VerticalGridSupportFragment
-import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.paging.PagingDataAdapter
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
+import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
 
 @AndroidEntryPoint
-class MediaItemGridFragment :
-    VerticalGridSupportFragment(), BrowseSupportFragment.MainFragmentAdapterProvider {
+class MediaItemListFragment : VerticalGridSupportFragment() {
 
     @Inject
-    lateinit var factory: Provider<AlbumListViewModel>
+    lateinit var factory: Provider<MediaItemListViewModel>
 
-    private val viewModel by navGraphViewModels<AlbumListViewModel>(R.id.albumListFragment) {
-        producer { factory.get() }
-    }
+    private val viewModel by viewModels<MediaItemListViewModel> { producer { factory.get() } }
 
-    private val mainFragmentAdapter = BrowseSupportFragment.MainFragmentAdapter(this)
-    private val mediaItemsAdapter = ArrayObjectAdapter(MediaItemPresenter())
+    private val mediaItemsAdapter = PagingDataAdapter(MediaItemPresenter(), DiffUtilCallback)
 
     init {
         gridPresenter = VerticalGridPresenter().apply {
@@ -47,24 +47,28 @@ class MediaItemGridFragment :
         setupViewModel()
     }
 
-    override fun getMainFragmentAdapter(): BrowseSupportFragment.MainFragmentAdapter<*> {
-        return mainFragmentAdapter
-    }
-
     private fun setupViews() {
         adapter = mediaItemsAdapter
-        setOnItemViewClickedListener { _, item, _, _ ->
-            item as MediaItemGridState.Item
-            findNavController().navigate(AlbumListFragmentDirections.mediaItemView(item.index))
-        }
+        // TODO item click listener
+//        setOnItemViewClickedListener { _, item, _, _ ->
+//            item as MediaItemGridState.Item
+//            findNavController().navigate(AlbumListFragmentDirections.mediaItemView(item.index))
+//        }
     }
 
     private fun setupViewModel() {
-        viewModel.mediaItemGridState.observe(viewLifecycleOwner, ::onState)
+        viewModel.action.observe(viewLifecycleOwner, ::onAction)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.mediaItemsPagingData.collectLatest { mediaItemsAdapter.submitData(it) }
+        }
     }
 
-    private fun onState(state: MediaItemGridState) {
-        mediaItemsAdapter.setItems(state.items, null)
+    private fun onAction(action: MediaItemListAction) {
+        when (action) {
+            MediaItemListAction.NavigateToAccountCreate -> {
+                findNavController().navigate(MediaItemListFragmentDirections.accountCreate())
+            }
+        }
     }
 }
 
@@ -96,7 +100,7 @@ private class MediaItemPresenter : Presenter() {
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-        val mediaItem = item as MediaItemGridState.Item
+        val mediaItem = item as MediaItem
         with((viewHolder.view as ImageCardView)) {
             Glide.with(this)
                 .load("${mediaItem.baseUrl}=w${mainImageSize.x}-h${mainImageSize.y}-c")
@@ -111,5 +115,16 @@ private class MediaItemPresenter : Presenter() {
         with((viewHolder.view as ImageCardView)) {
             Glide.with(this).clear(mainImageView)
         }
+    }
+}
+
+object DiffUtilCallback : DiffUtil.ItemCallback<MediaItem>() {
+
+    override fun areItemsTheSame(oldItem: MediaItem, newItem: MediaItem): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: MediaItem, newItem: MediaItem): Boolean {
+        return oldItem == newItem
     }
 }

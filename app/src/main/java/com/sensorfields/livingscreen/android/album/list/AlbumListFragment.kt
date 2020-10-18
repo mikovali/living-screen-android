@@ -12,6 +12,7 @@ import androidx.leanback.widget.SectionRow
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.sensorfields.livingscreen.android.R
+import com.sensorfields.livingscreen.android.mediaitem.list.MediaItemListFragment
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,9 +29,9 @@ class AlbumListFragment : BrowseSupportFragment() {
     }
 
     private val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
-    private val mediaItemGridFragmentFactory = object : FragmentFactory<MediaItemGridFragment>() {
-        private val mediaItemGridFragment = MediaItemGridFragment()
-        override fun createFragment(row: Any?): MediaItemGridFragment {
+    private val mediaItemGridFragmentFactory = object : FragmentFactory<MediaItemListFragment>() {
+        private val mediaItemGridFragment = MediaItemListFragment()
+        override fun createFragment(row: Any?): MediaItemListFragment {
             return mediaItemGridFragment
         }
     }
