@@ -5,23 +5,24 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.viewModels
 import androidx.leanback.app.VerticalGridSupportFragment
-import androidx.leanback.paging.PagingDataAdapter
 import androidx.leanback.widget.ImageCardView
+import androidx.leanback.widget.ObjectAdapter
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.VerticalGridPresenter
 import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
+import androidx.navigation.navGraphViewModels
+import androidx.paging.AsyncPagingDataDiffer
 import com.bumptech.glide.Glide
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -31,9 +32,10 @@ class MediaItemListFragment : VerticalGridSupportFragment() {
     @Inject
     lateinit var factory: Provider<MediaItemListViewModel>
 
-    private val viewModel by viewModels<MediaItemListViewModel> { producer { factory.get() } }
-
-    private val mediaItemsAdapter = PagingDataAdapter(MediaItemPresenter(), DiffUtilCallback)
+    private val viewModel by navGraphViewModels<MediaItemListViewModel>(
+        navGraphId = R.id.mediaItemListFragment,
+        factoryProducer = { producer { factory.get() } }
+    )
 
     init {
         gridPresenter = VerticalGridPresenter().apply {
@@ -48,25 +50,35 @@ class MediaItemListFragment : VerticalGridSupportFragment() {
     }
 
     private fun setupViews() {
-        adapter = mediaItemsAdapter
-        // TODO item click listener
-//        setOnItemViewClickedListener { _, item, _, _ ->
-//            item as MediaItemGridState.Item
-//            findNavController().navigate(AlbumListFragmentDirections.mediaItemView(item.index))
-//        }
+        adapter = MediaItemAdapter(
+            MediaItemPresenter(),
+            viewModel.differ,
+            viewModel.listUpdateCallback,
+            viewLifecycleOwner.lifecycleScope
+        )
+        setOnItemViewClickedListener { _, item, _, _ ->
+            viewModel.onMediaItemClicked(item as MediaItem)
+        }
     }
 
     private fun setupViewModel() {
         viewModel.action.observe(viewLifecycleOwner, ::onAction)
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.mediaItemsPagingData.collectLatest { mediaItemsAdapter.submitData(it) }
-        }
     }
 
     private fun onAction(action: MediaItemListAction) {
         when (action) {
             MediaItemListAction.NavigateToAccountCreate -> {
                 findNavController().navigate(MediaItemListFragmentDirections.accountCreate())
+            }
+            is MediaItemListAction.NavigateToMediaItemPhoto -> {
+                findNavController().navigate(
+                    MediaItemListFragmentDirections.mediaItemPhoto(action.mediaItem)
+                )
+            }
+            is MediaItemListAction.NavigateToMediaItemVideo -> {
+                findNavController().navigate(
+                    MediaItemListFragmentDirections.mediaItemVideo(action.mediaItem)
+                )
             }
         }
     }
@@ -118,13 +130,35 @@ private class MediaItemPresenter : Presenter() {
     }
 }
 
-object DiffUtilCallback : DiffUtil.ItemCallback<MediaItem>() {
+private class MediaItemAdapter(
+    presenter: Presenter,
+    private val differ: AsyncPagingDataDiffer<MediaItem>,
+    listUpdateCallback: FlowListUpdateCallback,
+    scope: CoroutineScope
+) : ObjectAdapter(presenter) {
 
-    override fun areItemsTheSame(oldItem: MediaItem, newItem: MediaItem): Boolean {
-        return oldItem.id == newItem.id
+    init {
+        listUpdateCallback.events
+            .onEach { event ->
+                when (event) {
+                    is FlowListUpdateCallback.Event.OnInserted -> {
+                        notifyItemRangeInserted(event.position, event.count)
+                    }
+                    is FlowListUpdateCallback.Event.OnRemoved -> {
+                        notifyItemRangeRemoved(event.position, event.count)
+                    }
+                    is FlowListUpdateCallback.Event.OnMoved -> {
+                        notifyItemMoved(event.fromPosition, event.toPosition)
+                    }
+                    is FlowListUpdateCallback.Event.OnChanged -> {
+                        notifyItemRangeChanged(event.position, event.count, event.payload)
+                    }
+                }
+            }
+            .launchIn(scope)
     }
 
-    override fun areContentsTheSame(oldItem: MediaItem, newItem: MediaItem): Boolean {
-        return oldItem == newItem
-    }
+    override fun size(): Int = differ.itemCount
+
+    override fun get(position: Int): MediaItem? = differ.getItem(position)
 }

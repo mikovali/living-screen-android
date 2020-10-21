@@ -16,7 +16,37 @@
 
     <fragment
         android:id="@+id/mediaItemListFragment"
-        android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemListFragment" />
+        android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemListFragment">
+
+        <action
+            android:id="@+id/mediaItemPhoto"
+            app:destination="@id/mediaItemPhotoFragment" />
+
+        <action
+            android:id="@+id/mediaItemVideo"
+            app:destination="@id/mediaItemVideoFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaItemPhotoFragment"
+        android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemPhotoFragment">
+
+        <argument
+            android:name="mediaItem"
+            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaItemVideoFragment"
+        android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemVideoFragment">
+
+        <argument
+            android:name="mediaItem"
+            app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/albumListFragment"
