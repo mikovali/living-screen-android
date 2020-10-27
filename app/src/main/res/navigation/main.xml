@@ -36,6 +36,16 @@
             android:name="mediaItem"
             app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
 
+        <action
+            android:id="@+id/mediaItemPhoto"
+            app:destination="@id/mediaItemPhotoFragment"
+            app:popUpTo="@id/mediaItemListFragment" />
+
+        <action
+            android:id="@+id/mediaItemVideo"
+            app:destination="@id/mediaItemVideoFragment"
+            app:popUpTo="@id/mediaItemListFragment" />
+
     </fragment>
 
     <fragment
@@ -45,6 +55,16 @@
         <argument
             android:name="mediaItem"
             app:argType="com.sensorfields.livingscreen.android.domain.MediaItem" />
+
+        <action
+            android:id="@+id/mediaItemPhoto"
+            app:destination="@id/mediaItemPhotoFragment"
+            app:popUpTo="@id/mediaItemListFragment" />
+
+        <action
+            android:id="@+id/mediaItemVideo"
+            app:destination="@id/mediaItemVideoFragment"
+            app:popUpTo="@id/mediaItemListFragment" />
 
     </fragment>
 

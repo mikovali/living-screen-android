@@ -10,7 +10,12 @@ class GooglePhotosPagingSource(
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, MediaItem> {
         return try {
-            val response = googlePhotosApi.searchMediaItems(params.loadSize, params.key)
+            val response = googlePhotosApi.searchMediaItems(
+                SearchMediaItemsRequest(
+                    pageSize = params.loadSize,
+                    pageToken = params.key
+                )
+            )
             LoadResult.Page(
                 data = response.mediaItems.toModels(),
                 prevKey = null,

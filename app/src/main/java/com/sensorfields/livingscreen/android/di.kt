@@ -29,7 +29,12 @@ object ApplicationModule {
 
     @Singleton
     @Provides
-    fun json(): Json = Json { ignoreUnknownKeys = true }
+    fun json(): Json {
+        return Json {
+            encodeDefaults = true
+            ignoreUnknownKeys = true
+        }
+    }
 
     @Reusable
     @Provides

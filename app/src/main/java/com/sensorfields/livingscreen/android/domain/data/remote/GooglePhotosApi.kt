@@ -13,8 +13,9 @@ import kotlinx.serialization.Serializable
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.POST
 import javax.inject.Inject
 
 interface GooglePhotosApi {
@@ -25,11 +26,8 @@ interface GooglePhotosApi {
     @GET("sharedAlbums")
     suspend fun getSharedAlbums(): GetSharedAlbumsResponse
 
-    @GET("mediaItems")
-    suspend fun searchMediaItems(
-        @Query("pageSize") pageSize: Int,
-        @Query("pageToken") pageToken: String?
-    ): SearchMediaItemsResponse
+    @POST("./mediaItems:search")
+    suspend fun searchMediaItems(@Body request: SearchMediaItemsRequest): SearchMediaItemsResponse
 }
 
 @Serializable
@@ -37,6 +35,9 @@ data class GetAlbumsResponse(val albums: List<AlbumDto>)
 
 @Serializable
 data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)
+
+@Serializable
+data class SearchMediaItemsRequest(val pageSize: Int, val pageToken: String?)
 
 @Serializable
 data class SearchMediaItemsResponse(

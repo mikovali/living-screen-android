@@ -44,6 +44,24 @@ class MediaItemListViewModel @Inject constructor(
         _action.postValue(action)
     }
 
+    fun onPreviousClicked(mediaItem: MediaItem) {
+        val index = differ.snapshot().indexOf(mediaItem)
+        if (index > 0) {
+            differ.getItem(index - 1)?.let { previous ->
+                onMediaItemClicked(previous)
+            }
+        }
+    }
+
+    fun onNextClicked(mediaItem: MediaItem) {
+        val index = differ.snapshot().indexOf(mediaItem)
+        if (index + 1 < differ.itemCount) {
+            differ.getItem(index + 1)?.let { next ->
+                onMediaItemClicked(next)
+            }
+        }
+    }
+
     private fun isGoogleAccountConnected() {
         if (!isGoogleAccountConnectedUseCase()) {
             _action.postValue(MediaItemListAction.NavigateToAccountCreate)
