@@ -46,9 +46,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs = listOf(
-            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-        )
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -67,10 +64,11 @@ detekt {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.0")
 
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
     implementation("androidx.fragment:fragment-ktx:1.3.0-beta01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.3.1")
     implementation("androidx.constraintlayout:constraintlayout:2.0.2")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.leanback:leanback-paging:1.1.0-alpha05")
