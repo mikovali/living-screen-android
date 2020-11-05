@@ -1,5 +1,6 @@
 package com.sensorfields.livingscreen.android.album.list
 
+import androidx.paging.PagingData
 import com.sensorfields.livingscreen.android.domain.Album
 import com.sensorfields.livingscreen.android.domain.MediaItem
 
@@ -9,9 +10,10 @@ data class AlbumListState(
 )
 
 data class MediaItemGridState(
-    val items: List<Item> = listOf()
+    val items: PagingData<Item> = PagingData.empty()
 ) {
     data class Item(
+        val id: String,
         val index: Int,
         val type: MediaItem.Type,
         val baseUrl: String,

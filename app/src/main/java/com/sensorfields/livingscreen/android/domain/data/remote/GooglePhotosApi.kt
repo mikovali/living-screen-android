@@ -13,7 +13,9 @@ import kotlinx.serialization.Serializable
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import javax.inject.Inject
 
 interface GooglePhotosApi {
@@ -24,8 +26,8 @@ interface GooglePhotosApi {
     @GET("sharedAlbums")
     suspend fun getSharedAlbums(): GetSharedAlbumsResponse
 
-    @GET("mediaItems")
-    suspend fun searchMediaItems(): SearchMediaItemsResponse
+    @POST("./mediaItems:search")
+    suspend fun searchMediaItems(@Body request: SearchMediaItemsRequest): SearchMediaItemsResponse
 }
 
 @Serializable
@@ -35,7 +37,13 @@ data class GetAlbumsResponse(val albums: List<AlbumDto>)
 data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)
 
 @Serializable
-data class SearchMediaItemsResponse(val mediaItems: List<MediaItemDto>)
+data class SearchMediaItemsRequest(val pageSize: Int, val pageToken: String?)
+
+@Serializable
+data class SearchMediaItemsResponse(
+    val mediaItems: List<MediaItemDto>,
+    val nextPageToken: String? = null
+)
 
 class GooglePhotosAuthenticator @Inject constructor(
     @ApplicationContext private val context: Context,
