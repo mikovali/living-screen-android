@@ -4,13 +4,13 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.1.1")
-        classpath(kotlin("gradle-plugin", version = "1.4.20"))
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.1")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.29.1-alpha")
-        classpath("com.google.gms:google-services:4.3.4")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.4.1")
-        classpath("com.google.firebase:firebase-appdistribution-gradle:2.0.1")
+        classpath("com.android.tools.build:gradle:4.1.2")
+        classpath(kotlin("gradle-plugin", version = Versions.kotlin))
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}")
+        classpath("com.google.gms:google-services:4.3.5")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.5.1")
+        classpath("com.google.firebase:firebase-appdistribution-gradle:2.1.0")
     }
 }
 
