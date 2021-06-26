@@ -1,8 +1,8 @@
-package com.sensorfields.livingscreen.android.domain.usecase
+package com.sensorfields.livingscreen.android.usecase
 
-import com.sensorfields.livingscreen.android.domain.Album
 import com.sensorfields.livingscreen.android.domain.data.dto.toModels
 import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
+import com.sensorfields.livingscreen.android.model.Album
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

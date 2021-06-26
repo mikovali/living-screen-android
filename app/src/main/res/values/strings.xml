@@ -2,6 +2,11 @@
 
     <string name="application_name">Living Screen</string>
 
+    <string name="home_all">My photos</string>
+    <string name="home_albums">Albums</string>
+    <string name="home_shared_albums">Shared albums</string>
+    <string name="home_view_all">View all >></string>
+
     <string name="album_list_title">Albums</string>
     <string name="album_list_all">All Photos</string>
     <string name="album_list_albums">Albums</string>

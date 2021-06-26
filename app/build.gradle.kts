@@ -52,6 +52,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = listOf(
+            "-Xopt-in=kotlin.ExperimentalStdlibApi"
+        )
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

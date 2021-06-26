@@ -18,7 +18,7 @@ import androidx.paging.AsyncPagingDataDiffer
 import coil.clear
 import coil.load
 import com.sensorfields.livingscreen.android.R
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.model.MediaItem
 import com.sensorfields.livingscreen.android.producer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

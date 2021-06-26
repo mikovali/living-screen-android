@@ -7,9 +7,9 @@ import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.usecase.IsGoogleAccountConnectedUseCase
 import com.sensorfields.livingscreen.android.domain.usecase.ObserveMediaItemsUseCase
+import com.sensorfields.livingscreen.android.model.MediaItem
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sensorfields.livingscreen.android.ActionLiveData
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.usecase.IsGoogleAccountConnectedUseCase
+import com.sensorfields.livingscreen.android.model.MediaItem
 import timber.log.Timber
 import javax.inject.Inject
 

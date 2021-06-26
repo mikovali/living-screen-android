@@ -1,8 +1,8 @@
 package com.sensorfields.livingscreen.android.album.list
 
 import androidx.paging.PagingData
-import com.sensorfields.livingscreen.android.domain.Album
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.model.Album
+import com.sensorfields.livingscreen.android.model.MediaItem
 
 data class AlbumListState(
     val albums: List<Album> = listOf(),

@@ -1,6 +1,6 @@
 package com.sensorfields.livingscreen.android.domain.data.dto
 
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.model.MediaItem
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 

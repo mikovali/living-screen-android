@@ -2,7 +2,7 @@ package com.sensorfields.livingscreen.android.domain.data.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sensorfields.livingscreen.android.domain.Album
+import com.sensorfields.livingscreen.android.model.Album
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,6 +1,6 @@
 package com.sensorfields.livingscreen.android.mediaitem.list
 
-import com.sensorfields.livingscreen.android.domain.MediaItem
+import com.sensorfields.livingscreen.android.model.MediaItem
 
 sealed class MediaItemListAction {
     object NavigateToAccountCreate : MediaItemListAction()

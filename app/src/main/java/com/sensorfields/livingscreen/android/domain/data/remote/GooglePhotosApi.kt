@@ -32,7 +32,7 @@ interface GooglePhotosApi {
 }
 
 @Serializable
-data class GetAlbumsResponse(val albums: List<AlbumDto>)
+data class GetAlbumsResponse(val albums: List<AlbumDto> = emptyList())
 
 @Serializable
 data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)

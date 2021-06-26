@@ -2,8 +2,8 @@ package com.sensorfields.livingscreen.android.domain.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.domain.data.dto.toModels
+import com.sensorfields.livingscreen.android.model.MediaItem
 
 class GooglePhotosPagingSource(
     private val googlePhotosApi: GooglePhotosApi
