@@ -5,10 +5,10 @@ import androidx.room.Room
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
-import com.sensorfields.livingscreen.android.domain.data.local.ApplicationDb
-import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
-import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosAuthenticator
+import com.sensorfields.livingscreen.android.data.local.AlbumDao
+import com.sensorfields.livingscreen.android.data.local.ApplicationDb
+import com.sensorfields.livingscreen.android.data.remote.GooglePhotosApi
+import com.sensorfields.livingscreen.android.data.remote.GooglePhotosAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable

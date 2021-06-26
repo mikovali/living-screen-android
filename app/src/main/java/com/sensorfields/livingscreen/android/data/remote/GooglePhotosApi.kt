@@ -1,4 +1,4 @@
-package com.sensorfields.livingscreen.android.domain.data.remote
+package com.sensorfields.livingscreen.android.data.remote
 
 import android.content.Context
 import com.google.android.gms.auth.GoogleAuthUtil
@@ -6,8 +6,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Tasks
 import com.sensorfields.livingscreen.android.HTTP_UNAUTHORIZED
-import com.sensorfields.livingscreen.android.domain.data.dto.AlbumDto
-import com.sensorfields.livingscreen.android.domain.data.dto.MediaItemDto
+import com.sensorfields.livingscreen.android.data.dto.AlbumDto
+import com.sensorfields.livingscreen.android.data.dto.MediaItemDto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.Serializable
 import okhttp3.Interceptor

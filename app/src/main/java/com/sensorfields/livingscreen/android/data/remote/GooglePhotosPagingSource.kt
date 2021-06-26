@@ -1,8 +1,8 @@
-package com.sensorfields.livingscreen.android.domain.data.remote
+package com.sensorfields.livingscreen.android.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.sensorfields.livingscreen.android.domain.data.dto.toModels
+import com.sensorfields.livingscreen.android.mapping.toModels
 import com.sensorfields.livingscreen.android.model.MediaItem
 
 class GooglePhotosPagingSource(

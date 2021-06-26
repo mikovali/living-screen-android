@@ -1,11 +1,11 @@
-package com.sensorfields.livingscreen.android.domain.data.local
+package com.sensorfields.livingscreen.android.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.sensorfields.livingscreen.android.domain.data.dto.AlbumDto
+import com.sensorfields.livingscreen.android.data.dto.AlbumDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao

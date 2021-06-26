@@ -3,8 +3,8 @@ package com.sensorfields.livingscreen.android.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.sensorfields.livingscreen.android.domain.data.local.AlbumDao
-import com.sensorfields.livingscreen.android.domain.data.remote.GooglePhotosApi
+import com.sensorfields.livingscreen.android.data.local.AlbumDao
+import com.sensorfields.livingscreen.android.data.remote.GooglePhotosApi
 import dagger.Reusable
 import timber.log.Timber
 import javax.inject.Inject
