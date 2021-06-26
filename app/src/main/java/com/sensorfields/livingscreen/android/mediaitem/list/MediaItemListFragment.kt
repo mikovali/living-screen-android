@@ -15,7 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.paging.AsyncPagingDataDiffer
-import com.bumptech.glide.Glide
+import coil.clear
+import coil.load
 import com.sensorfields.livingscreen.android.R
 import com.sensorfields.livingscreen.android.domain.MediaItem
 import com.sensorfields.livingscreen.android.producer
@@ -114,18 +115,17 @@ private class MediaItemPresenter : Presenter() {
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val mediaItem = item as MediaItem
         with((viewHolder.view as ImageCardView)) {
-            Glide.with(this)
-                .load("${mediaItem.baseUrl}=w${mainImageSize.x}-h${mainImageSize.y}-c")
-                .placeholder(R.drawable.ic_baseline_photo_24)
-                .error(R.drawable.ic_baseline_broken_image_24)
-                .into(mainImageView)
+            mainImageView.load("${mediaItem.baseUrl}=w${mainImageSize.x}-h${mainImageSize.y}-c") {
+                placeholder(R.drawable.ic_baseline_photo_24)
+                error(R.drawable.ic_baseline_broken_image_24)
+            }
             titleText = mediaItem.fileName
         }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
         with((viewHolder.view as ImageCardView)) {
-            Glide.with(this).clear(mainImageView)
+            mainImageView.clear()
         }
     }
 }

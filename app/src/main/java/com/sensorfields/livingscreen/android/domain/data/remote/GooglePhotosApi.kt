@@ -16,6 +16,7 @@ import okhttp3.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import timber.log.Timber
 import javax.inject.Inject
 
 interface GooglePhotosApi {
@@ -80,6 +81,7 @@ class GooglePhotosAuthenticator @Inject constructor(
                     "oauth2:${googleAccount.requestedScopes.joinToString(" ") { it.scopeUri }}"
                 )
             } catch (e: Exception) {
+                Timber.w(e, "Get Google Auth token")
                 null
             }
         }

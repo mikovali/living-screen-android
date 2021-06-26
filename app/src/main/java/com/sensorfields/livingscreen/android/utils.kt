@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import timber.log.Timber
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -52,6 +53,7 @@ class SignInWithGoogle : ActivityResultContract<GoogleSignInOptions, GoogleSignI
         return try {
             GoogleSignIn.getSignedInAccountFromIntent(intent).result
         } catch (e: Exception) {
+            Timber.w(e, "Parse Google Sign-in result")
             null
         }
     }
