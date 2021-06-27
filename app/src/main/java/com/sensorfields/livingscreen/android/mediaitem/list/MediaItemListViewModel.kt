@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.sensorfields.livingscreen.android.ActionLiveData
 import com.sensorfields.livingscreen.android.domain.usecase.IsGoogleAccountConnectedUseCase
-import com.sensorfields.livingscreen.android.domain.usecase.ObserveMediaItemsUseCase
 import com.sensorfields.livingscreen.android.model.MediaItem
+import com.sensorfields.livingscreen.android.usecase.ObserveMediaItemsUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -69,7 +69,7 @@ class MediaItemListViewModel @Inject constructor(
     }
 
     private fun observeMediaItems() = viewModelScope.launch {
-        observeMediaItemsUseCase().collect { differ.submitData(it) }
+        observeMediaItemsUseCase(null).collect { differ.submitData(it) }
     }
 }
 

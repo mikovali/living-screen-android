@@ -8,7 +8,7 @@ fun MediaItemDto.toModel(): MediaItem {
         id = id,
         type = if (mediaMetadata.video != null) MediaItem.Type.Video else MediaItem.Type.Photo,
         baseUrl = baseUrl,
-        fileName = filename
+        filename = filename
     )
 }
 

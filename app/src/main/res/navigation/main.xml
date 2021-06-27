@@ -20,6 +20,17 @@
         android:name="com.sensorfields.livingscreen.android.ui.home.HomeFragment" />
 
     <fragment
+        android:id="@+id/mediaItemGridFragment"
+        android:name="com.sensorfields.livingscreen.android.ui.mediaitem.grid.MediaItemGridFragment">
+
+        <argument
+            android:name="albumId"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/mediaItemListFragment"
         android:name="com.sensorfields.livingscreen.android.mediaitem.list.MediaItemListFragment">
 

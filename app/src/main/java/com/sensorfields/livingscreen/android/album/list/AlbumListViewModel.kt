@@ -68,7 +68,7 @@ class AlbumListViewModel @Inject constructor(
         return MediaItemViewState(
             type = item.type,
             baseUrl = item.baseUrl,
-            fileName = item.fileName,
+            fileName = item.filename,
             isPreviousVisible = index > 0,
             isNextVisible = index < items.size
         )

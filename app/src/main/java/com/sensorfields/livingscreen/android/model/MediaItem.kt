@@ -8,7 +8,7 @@ data class MediaItem(
     val id: String,
     val type: Type,
     val baseUrl: String,
-    val fileName: String
+    val filename: String
 ) : Parcelable {
 
     sealed class Type : Parcelable {

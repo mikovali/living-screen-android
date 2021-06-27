@@ -53,8 +53,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
-            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-            "-Xopt-in=kotlin.ExperimentalStdlibApi"
+            "-Xopt-in=kotlin.ExperimentalStdlibApi",
+            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"
         )
     }
     compileOptions {

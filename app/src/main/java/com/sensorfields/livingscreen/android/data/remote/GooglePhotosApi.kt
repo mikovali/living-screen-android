@@ -38,7 +38,7 @@ data class GetAlbumsResponse(val albums: List<AlbumDto> = emptyList())
 data class GetSharedAlbumsResponse(val sharedAlbums: List<AlbumDto>)
 
 @Serializable
-data class SearchMediaItemsRequest(val pageSize: Int, val pageToken: String?)
+data class SearchMediaItemsRequest(val albumId: String?, val pageSize: Int, val pageToken: String?)
 
 @Serializable
 data class SearchMediaItemsResponse(

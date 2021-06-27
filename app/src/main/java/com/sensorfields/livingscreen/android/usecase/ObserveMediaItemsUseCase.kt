@@ -1,4 +1,4 @@
-package com.sensorfields.livingscreen.android.domain.usecase
+package com.sensorfields.livingscreen.android.usecase
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -11,10 +11,10 @@ import javax.inject.Inject
 
 class ObserveMediaItemsUseCase @Inject constructor(private val googlePhotosApi: GooglePhotosApi) {
 
-    operator fun invoke(): Flow<PagingData<MediaItem>> {
+    operator fun invoke(albumId: String?): Flow<PagingData<MediaItem>> {
         return Pager(
             config = PagingConfig(pageSize = 25, initialLoadSize = 25),
-            pagingSourceFactory = { GooglePhotosPagingSource(googlePhotosApi) }
+            pagingSourceFactory = { GooglePhotosPagingSource(googlePhotosApi, albumId) }
         ).flow
     }
 }

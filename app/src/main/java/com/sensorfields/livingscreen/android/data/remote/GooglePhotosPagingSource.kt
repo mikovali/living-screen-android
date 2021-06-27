@@ -6,13 +6,15 @@ import com.sensorfields.livingscreen.android.mapping.toModels
 import com.sensorfields.livingscreen.android.model.MediaItem
 
 class GooglePhotosPagingSource(
-    private val googlePhotosApi: GooglePhotosApi
+    private val googlePhotosApi: GooglePhotosApi,
+    private val albumId: String?
 ) : PagingSource<String, MediaItem>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, MediaItem> {
         return try {
             val response = googlePhotosApi.searchMediaItems(
                 SearchMediaItemsRequest(
+                    albumId = albumId,
                     pageSize = params.loadSize,
                     pageToken = params.key
                 )
